@@ -1,3 +1,4 @@
+import 'package:application/Pages/Dashboard.dart';
 import 'package:application/Pages/SignUp.dart';
 import 'package:flutter/material.dart';
 
@@ -9,6 +10,8 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+
+  bool isShowPass = false;
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -18,9 +21,9 @@ class _LoginPageState extends State<LoginPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Center(
+            const Center(
               child: Padding(
-                padding: const EdgeInsets.only(top: 10),
+                padding: EdgeInsets.only(top: 10),
                 child: Text(
                   'Login',
                   style: TextStyle(
@@ -30,13 +33,13 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
             ),
-            SizedBox(height: 7),
-            Text("Welcome Back",
+            const SizedBox(height: 7),
+            const Text("Welcome Back",
                 style: TextStyle(
                     color: Colors.black54,
                     fontWeight: FontWeight.w500,
                     fontSize: 14)),
-            SizedBox(
+            const SizedBox(
               height: 50,
             ),
             Padding(
@@ -48,12 +51,12 @@ class _LoginPageState extends State<LoginPage> {
                   child: Padding(
                     padding: const EdgeInsets.only(left: 12, right: 12),
                     child: TextFormField(
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                           hintText: "Username", border: InputBorder.none),
                     ),
                   )),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             Padding(
               padding: const EdgeInsets.only(left: 30, right: 30),
               child: Container(
@@ -63,36 +66,51 @@ class _LoginPageState extends State<LoginPage> {
                   child: Padding(
                     padding: const EdgeInsets.only(left: 12, right: 12),
                     child: TextFormField(
-                      decoration: InputDecoration(
-                          suffixIcon: Icon(Icons.visibility),
+                      obscureText: !isShowPass,
+                      decoration:  InputDecoration(
+                          suffixIcon: InkWell(child: Icon(isShowPass? Icons.visibility_off:   Icons.visibility),onTap: () {
+                            setState(() {
+                            if(isShowPass){
+                              isShowPass=false;
+                            }else{
+                              isShowPass=true;
+                            }  
+                            });
+                            
+                            
+                            
+                          },),
                           hintText: "Password",
                           border: InputBorder.none),
                     ),
                   )),
             ),
-            SizedBox(height: 12),
-            Container(
-
-              height: 40,
-              width: 140,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(20),
-                gradient: LinearGradient(begin: Alignment.centerLeft,end: Alignment.centerRight,colors: [Colors.tealAccent,Colors.blue, Colors.pinkAccent,])),
-              child: Center(child: Text('LOGIN',style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),)),
+            const SizedBox(height: 12),
+            InkWell(
+              onTap: () {Navigator.pushReplacement(context, MaterialPageRoute(builder: ((context) => Dashboard())));},
+              child: Container(
+            
+                height: 40,
+                width: 140,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  gradient: const LinearGradient(begin: Alignment.centerLeft,end: Alignment.centerRight,colors: [Colors.tealAccent,Colors.blue, Colors.pinkAccent,])),
+                child: const Center(child: Text('LOGIN',style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold),)),
+              ),
             ),
             //SizedBox(height: 1),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text("Don't have an account?",
+                const Text("Don't have an account?",
                     style: TextStyle(
                         color: Colors.black45,
                         fontWeight: FontWeight.w400,
                         fontSize: 14)),
                         TextButton(onPressed: (){
-                          Navigator.push(context, MaterialPageRoute(builder: (context)=> SignupPage()));
+                          Navigator.push(context, MaterialPageRoute(builder: (context)=> const SignupPage()));
             
-                        }, child: Text('SignUp',style: TextStyle(color: Colors.pink),))
+                        }, child: const Text('SignUp',style: TextStyle(color: Colors.pink),))
               ],
             ),
           ],
