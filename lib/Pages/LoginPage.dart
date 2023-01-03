@@ -1,5 +1,8 @@
 import 'package:application/Pages/Dashboard.dart';
 import 'package:application/Pages/SignUp.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatefulWidget {
@@ -11,8 +14,10 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   bool isShowPass = false;
+  final TextEditingController _emailcontroller = TextEditingController();
+  final TextEditingController _pass = TextEditingController();
   var _formKey = GlobalKey<FormState>();
-  var isLoading = false;
+  bool isLoading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -55,10 +60,15 @@ class _LoginPageState extends State<LoginPage> {
                     child: Padding(
                       padding: const EdgeInsets.only(left: 12, right: 12),
                       child: TextFormField(
-                        
+                        controller: _emailcontroller,
+
                         decoration: const InputDecoration(
-                          prefixIcon: Icon(Icons.email,color: Colors.black45,),
-                            hintText: "Email", border: InputBorder.none),
+                            prefixIcon: Icon(
+                              Icons.email,
+                              color: Colors.black45,
+                            ),
+                            hintText: "Email",
+                            border: InputBorder.none),
                         // onFieldSubmitted: (value) {
                         //   //validator
                         // },
@@ -83,14 +93,18 @@ class _LoginPageState extends State<LoginPage> {
                     child: Padding(
                       padding: const EdgeInsets.only(left: 12, right: 12),
                       child: TextFormField(
+                        controller: _pass,
                         validator: (value) {
-                          if(value!.isEmpty || value.length<=6){
+                          if (value!.isEmpty || value.length <= 6) {
                             return 'Password must be contain more than 6 characters';
                           }
                         },
                         obscureText: !isShowPass,
                         decoration: InputDecoration(
-                          prefixIcon: Icon(Icons.lock,color: Colors.black45,),
+                            prefixIcon: Icon(
+                              Icons.lock,
+                              color: Colors.black45,
+                            ),
                             suffixIcon: InkWell(
                               child: Icon(isShowPass
                                   ? Icons.visibility_off
@@ -112,10 +126,47 @@ class _LoginPageState extends State<LoginPage> {
               ),
               const SizedBox(height: 12),
               InkWell(
-                onTap: () {
+                onTap: () async {
                   if (_formKey.currentState!.validate()) {
-                    
-                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => Dashboard()));
+                    setState(() {
+                      isLoading = true;
+                    });
+
+                    try {
+                      UserCredential userCredential = await FirebaseAuth
+                          .instance
+                          .signInWithEmailAndPassword(
+                              email: _emailcontroller.text,
+                              password: _pass.text);
+                      if (userCredential.user != null) {
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => Dashboard()));
+                      } else {
+                        setState(() {
+                          isLoading = false;
+                        });
+                      }
+                    } on FirebaseAuthException catch (e) {
+                      if (e.code == 'user-not-found') {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('Usernot found!!')));
+                        setState(() {
+                          isLoading = false;
+                        });
+                      }
+                      setState(() {
+                        isLoading = false;
+                      });
+                    } catch (e) {
+                      setState(() {
+                        isLoading = false;
+                      });
+                      print("RAVI....");
+                    }
+
+                    //
                   }
                 },
                 child: Container(
@@ -131,12 +182,15 @@ class _LoginPageState extends State<LoginPage> {
                             Colors.blue,
                             Colors.pinkAccent,
                           ])),
-                  child: const Center(
-                      child: Text(
-                    'LOGIN',
-                    style: TextStyle(
-                        color: Colors.white, fontWeight: FontWeight.bold),
-                  )),
+                  child: Center(
+                      child: isLoading
+                          ? Container(height: 8, child: CircularProgressIndicator(color: Colors.white,))
+                          : Text(
+                              'LOGIN',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold),
+                            )),
                 ),
               ),
               //SizedBox(height: 1),

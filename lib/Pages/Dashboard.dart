@@ -52,11 +52,10 @@ class _DashboardState extends State<Dashboard> {
         //type: BottomNavigationBarType.fixed,
         items: [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Vendors'),
+          BottomNavigationBarItem(icon: Icon(Icons.list), label: 'Lists'),
           BottomNavigationBarItem(
-              icon: Icon(Icons.person), label: 'Vendors'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.list), label: 'Lists'),
-          BottomNavigationBarItem(icon: Icon(Icons.category), label: 'Categories'),
+              icon: Icon(Icons.category), label: 'Categories'),
           BottomNavigationBarItem(icon: Icon(Icons.more), label: 'More'),
         ],
       ),

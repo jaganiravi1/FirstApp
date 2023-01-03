@@ -1,4 +1,6 @@
+import 'package:application/Pages/Dashboard.dart';
 import 'package:application/Pages/LoginPage.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -13,8 +15,12 @@ class SignupPage extends StatefulWidget {
 class _SignupPageState extends State<SignupPage> {
 
   var _formKey = GlobalKey<FormState>();
+  bool isShowPass = false;
+  bool isShowPass1 = false;
   final TextEditingController _pass = TextEditingController();
    final TextEditingController _confirmpass = TextEditingController();
+     final TextEditingController _emailcontroller = TextEditingController();
+   final TextEditingController _usernamecontroller= TextEditingController();
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -39,7 +45,7 @@ class _SignupPageState extends State<SignupPage> {
                 ),
               ),
               SizedBox(height: 7),
-              Text("Welcome Back",
+              Text("Create a new account",
                   style: TextStyle(
                       color: Colors.black54,
                       fontWeight: FontWeight.w500,
@@ -56,6 +62,7 @@ class _SignupPageState extends State<SignupPage> {
                     child: Padding(
                       padding: const EdgeInsets.only(left: 12, right: 12),
                       child: TextFormField(
+                        controller: _usernamecontroller,
                         decoration: InputDecoration(
                           prefixIcon: Icon(Icons.person,color: Colors.black45,),
                             hintText: "Username", border: InputBorder.none),
@@ -79,6 +86,9 @@ class _SignupPageState extends State<SignupPage> {
                     child: Padding(
                       padding: const EdgeInsets.only(left: 12, right: 12),
                       child: TextFormField(
+                        controller: _emailcontroller,
+                        
+
                         decoration: InputDecoration(
                           prefixIcon: Icon(Icons.email,color: Colors.black45,),
                             hintText: "Email", border: InputBorder.none),
@@ -99,8 +109,11 @@ class _SignupPageState extends State<SignupPage> {
                         borderRadius: BorderRadius.circular(25),
                         boxShadow: [BoxShadow(color: Colors.grey.shade300)]),
                     child: Padding(
+                      
                       padding: const EdgeInsets.only(left: 12, right: 12),
                       child: TextFormField(
+                        obscureText: !isShowPass,
+
                         controller: _pass,
                         validator: (value) {
                           if(value!.isEmpty || value.length<=6){
@@ -108,10 +121,18 @@ class _SignupPageState extends State<SignupPage> {
                           }
                         },
                         decoration: InputDecoration(
+                         
                           prefixIcon: Icon(Icons.lock,color: Colors.black45,),
-                            suffixIcon: Icon(Icons.visibility),
+                            suffixIcon: InkWell(child: Icon(isShowPass? Icons.visibility_off:Icons.visibility)),
                             hintText: "Password",
                             border: InputBorder.none),
+                            onTap: () {
+                              setState(() {
+                                if(isShowPass){
+                                  isShowPass=false;
+                                }else{isShowPass=true;}
+                              });
+                            },
                       ),
                     ),
                     ),
@@ -126,6 +147,7 @@ class _SignupPageState extends State<SignupPage> {
                     child: Padding(
                       padding: const EdgeInsets.only(left: 12, right: 12),
                       child: TextFormField(
+                        obscureText: !isShowPass1,
                         controller: _confirmpass,
                         validator: (value) {
                           if(value!.isEmpty){
@@ -137,18 +159,29 @@ class _SignupPageState extends State<SignupPage> {
                         },
                         decoration: InputDecoration(
                           prefixIcon: Icon(Icons.lock,color: Colors.black45,),
-                            suffixIcon: Icon(Icons.visibility),
+                           suffixIcon: InkWell(child: Icon(isShowPass1? Icons.visibility_off:Icons.visibility)),
                             hintText: "Confirm Password",
                             border: InputBorder.none),
+                            onTap: () {
+                              setState(() {
+                                if(isShowPass1){
+                                  isShowPass1=false;
+                                }else{isShowPass1=true;}
+                              });
+                            },
                       ),
                     ),
                     ),
               ),
               SizedBox(height: 12),
               InkWell(
-                onTap: () {
+                onTap: () async{
                   if (_formKey.currentState!.validate()){
-                    Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>LoginPage()));
+                   UserCredential usercredential= await FirebaseAuth.instance.createUserWithEmailAndPassword(email: _emailcontroller.text, password: _pass.text);
+                   if(usercredential.user!=null){
+                     Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>Dashboard()));
+                   }
+                   
                   }
                 },
                 child: Container(
