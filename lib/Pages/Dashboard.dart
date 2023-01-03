@@ -17,10 +17,16 @@ class _DashboardState extends State<Dashboard> {
       child: Text('HomePage'),
     ),
     Center(
-      child: Text('Favourites'),
+      child: Text('Vendors'),
     ),
     Center(
-      child: Text('Playlist'),
+      child: Text('Lists'),
+    ),
+    Center(
+      child: Text('Categories'),
+    ),
+    Center(
+      child: Text('More'),
     ),
   ];
 
@@ -34,9 +40,9 @@ class _DashboardState extends State<Dashboard> {
         backgroundColor: Colors.pink,
       ),
       bottomNavigationBar: BottomNavigationBar(
-        
         currentIndex: currentIndx,
         fixedColor: Colors.pinkAccent,
+        unselectedItemColor: Colors.black45,
         onTap: (index) {
           setState(() {
             currentIndx = index;
@@ -47,10 +53,90 @@ class _DashboardState extends State<Dashboard> {
         items: [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
           BottomNavigationBarItem(
-              icon: Icon(Icons.favorite_outline), label: 'Favourits'),
+              icon: Icon(Icons.person), label: 'Vendors'),
           BottomNavigationBarItem(
-              icon: Icon(Icons.playlist_play), label: 'Playlist'),
+              icon: Icon(Icons.list), label: 'Lists'),
+          BottomNavigationBarItem(icon: Icon(Icons.category), label: 'Categories'),
+          BottomNavigationBarItem(icon: Icon(Icons.more), label: 'More'),
         ],
+      ),
+      drawer: Drawer(
+        child: ListView(
+          children: [
+            const UserAccountsDrawerHeader(
+              decoration: BoxDecoration(color: Colors.pinkAccent),
+              accountEmail: Text('jaganiravi@gmail.com'),
+              accountName: Text(
+                'Ravi Jagani',
+                style: TextStyle(fontSize: 18),
+              ),
+            ),
+            ListTile(
+              leading: Padding(
+                padding: const EdgeInsets.only(left: 16.0),
+                child: Icon(Icons.payment_outlined),
+              ),
+              title: Text(
+                'Payment Method',
+                style: TextStyle(color: Colors.black54),
+              ),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+            Divider(
+              thickness: 0.8,
+              color: Color.fromARGB(255, 251, 189, 210),
+            ),
+            ListTile(
+              leading: Padding(
+                padding: const EdgeInsets.only(left: 16.0),
+                child: Icon(Icons.location_city),
+              ),
+              title: Text(
+                'Addresses',
+                style: TextStyle(color: Colors.black54),
+              ),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+            Divider(
+              thickness: 0.8,
+              color: Color.fromARGB(255, 251, 189, 210),
+            ),
+            ListTile(
+              leading: Padding(
+                padding: const EdgeInsets.only(left: 16.0),
+                child: Icon(Icons.privacy_tip),
+              ),
+              title: Text(
+                'Password',
+                style: TextStyle(color: Colors.black54),
+              ),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+            Divider(
+              thickness: 0.8,
+              color: Color.fromARGB(255, 251, 189, 210),
+            ),
+            ListTile(
+              leading: Padding(
+                padding: const EdgeInsets.only(left: 16.0),
+                child: Icon(Icons.more),
+              ),
+              title: Text(
+                'Other',
+                style: TextStyle(color: Colors.black54),
+              ),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
