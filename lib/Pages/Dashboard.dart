@@ -1,3 +1,6 @@
+import 'package:application/Pages/LoginPage.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
@@ -64,9 +67,12 @@ class _DashboardState extends State<Dashboard> {
           children: [
             const UserAccountsDrawerHeader(
               decoration: BoxDecoration(color: Colors.pinkAccent),
+              currentAccountPicture: CircleAvatar(
+                backgroundColor: Colors.white,
+                child: Icon(Icons.person,color: Colors.pinkAccent,size: 38,),
+              ),
               accountEmail: Text('jaganiravi@gmail.com'),
-              accountName: Text(
-                'Ravi Jagani',
+              accountName: Text('Ravi Jagani',
                 style: TextStyle(fontSize: 18),
               ),
             ),
@@ -132,6 +138,25 @@ class _DashboardState extends State<Dashboard> {
               ),
               onTap: () {
                 Navigator.pop(context);
+              },
+            ),
+            Divider(
+              thickness: 0.8,
+              color: Color.fromARGB(255, 251, 189, 210),
+            ),
+            ListTile(
+              leading: Padding(
+                padding: const EdgeInsets.only(left: 16.0),
+                child: Icon(Icons.logout),
+              ),
+              title: Text(
+                'Sign out',
+                style: TextStyle(color: Colors.black54),
+              ),
+              onTap: () {
+                FirebaseAuth.instance.signOut();
+                
+                Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>LoginPage()), (route) => false);
               },
             ),
           ],

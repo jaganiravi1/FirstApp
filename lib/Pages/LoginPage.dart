@@ -163,7 +163,7 @@ class _LoginPageState extends State<LoginPage> {
                       setState(() {
                         isLoading = false;
                       });
-                      print("RAVI....");
+                      print(e);
                     }
 
                     //
@@ -211,7 +211,7 @@ class _LoginPageState extends State<LoginPage> {
                       },
                       child: const Text(
                         'SignUp',
-                        style: TextStyle(color: Colors.pink),
+                        style: TextStyle(color: Colors.pink,fontWeight: FontWeight.bold),
                       ))
                 ],
               ),
