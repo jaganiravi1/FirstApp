@@ -21,14 +21,13 @@ class _SplashScreenState extends State<SplashScreen> {
       FirebaseAuth.instance.authStateChanges().listen((User? user) {
         if (user != null) {
           Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => Dashboard()));
-        }else{
+              context, MaterialPageRoute(builder: (context) => Dashboard()));
+        } else {
           Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => LoginPage()));
-        };
+              context, MaterialPageRoute(builder: (context) => LoginPage()));
+        }
+        ;
       });
-
-      
     });
   }
 
@@ -38,27 +37,34 @@ class _SplashScreenState extends State<SplashScreen> {
         body: Container(
       height: MediaQuery.of(context).size.height,
       width: MediaQuery.of(context).size.width,
-      decoration: BoxDecoration(
-          gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-            Colors.tealAccent,
-            Colors.blue,
-            Colors.pinkAccent,
-          ])),
+      color: Theme.of(context).primaryColor,
+      // decoration: BoxDecoration(
+      //     gradient: LinearGradient(
+      //         begin: Alignment.topLeft,
+      //         end: Alignment.bottomRight,
+      //         colors: [
+      //       Colors.tealAccent,
+      //       Colors.blue,
+      //       Colors.pinkAccent,
+      //     ])),
       child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.music_note, color: Colors.white, size: 100),
-            SizedBox(
-              height: 12,
+            Image.asset(
+              'lib/assets/logo1.png',
+              height: 150,
+              fit: BoxFit.fill,
             ),
+            // Icon(Icons.music_note, color: Colors.white, size: 100),
+            // SizedBox(
+            //   height: 1,
+            // ),
             Text(
-              "Music",
+              "Shoppy",
               style: TextStyle(
                 color: Colors.white,
+                fontStyle: FontStyle.italic,
                 fontWeight: FontWeight.w600,
                 fontSize: 22.0,
               ),

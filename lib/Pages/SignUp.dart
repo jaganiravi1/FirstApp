@@ -14,6 +14,7 @@ class SignupPage extends StatefulWidget {
 
 class _SignupPageState extends State<SignupPage> {
   var _formKey = GlobalKey<FormState>();
+  bool isLoading = false;
   bool isShowPass = false;
   bool isShowPass1 = false;
   final TextEditingController _pass = TextEditingController();
@@ -27,19 +28,21 @@ class _SignupPageState extends State<SignupPage> {
         key: _formKey,
         child: Scaffold(
           //appBar: AppBar(title: Text("Cricket"),centerTitle: true,backgroundColor: Colors.blueAccent,),
-          body: SingleChildScrollView (
+          body: SingleChildScrollView(
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+              // mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                SizedBox(height: MediaQuery.of(context).size.height*0.2,),
+                SizedBox(
+                  height: MediaQuery.of(context).size.height * 0.1,
+                ),
                 Center(
                   child: Padding(
-                    padding: const EdgeInsets.only(top: 10),
+                    padding: const EdgeInsets.only(top: 1),
                     child: Text(
                       'SignUp',
                       style: TextStyle(
-                          color: Colors.pink,
+                          color: Theme.of(context).primaryColor,
                           fontWeight: FontWeight.w600,
                           fontSize: 30),
                     ),
@@ -56,89 +59,122 @@ class _SignupPageState extends State<SignupPage> {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 30, right: 30),
-                  child: Container(
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(25),
-                          boxShadow: [BoxShadow(color: Colors.grey.shade300)]),
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 12, right: 12),
-                        child: TextFormField(
-                          controller: _usernamecontroller,
-                          decoration: InputDecoration(
-                              prefixIcon: Icon(
-                                Icons.person,
-                                color: Colors.black45,
-                              ),
-                              hintText: "Username",
-                              border: InputBorder.none),
-                          validator: (value) {
-                            if (value!.isEmpty) {
-                              return 'Enter valid username!';
-                            }
-                            return null;
-                          },
+                  child: TextFormField(
+                      cursorColor: Theme.of(context).colorScheme.secondary,
+                      controller: _usernamecontroller,
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      decoration: InputDecoration(
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Theme.of(context).colorScheme.secondary,
+                          ),
+                          borderRadius: BorderRadius.circular(30),
                         ),
-                      )),
+
+                        prefixIcon: Icon(Icons.person,
+                            color: Theme.of(context).colorScheme.secondary),
+                        hintText: 'Username',
+                        //errorText: 'Invalid Email',
+                        focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(30),
+                            borderSide: BorderSide(
+                                width: 2,
+                                color:
+                                    Theme.of(context).colorScheme.secondary)),
+                        errorBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(30),
+                            borderSide: BorderSide(color: Colors.red)),
+
+                        labelText: 'Username',
+                        labelStyle: TextStyle(
+                            color: Theme.of(context).colorScheme.secondary),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                      ),
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return '*required';
+                        }
+
+                        return null;
+                      }),
                 ),
                 SizedBox(
                   height: 16,
                 ),
                 Padding(
                   padding: const EdgeInsets.only(left: 30, right: 30),
-                  child: Container(
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(25),
-                          boxShadow: [BoxShadow(color: Colors.grey.shade300)]),
-                      child: Padding(
-                        padding: const EdgeInsets.only(left: 12, right: 12),
-                        child: TextFormField(
-                          controller: _emailcontroller,
-                          decoration: InputDecoration(
-                              prefixIcon: Icon(
-                                Icons.email,
-                                color: Colors.black45,
-                              ),
-                              hintText: "Email",
-                              border: InputBorder.none),
-                          validator: (value) {
-                            if (value!.isEmpty ||
-                                !RegExp(r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-                                    .hasMatch(value)) {
-                              return 'Enter valid email!';
-                            }
-                            return null;
-                          },
+                  child: TextFormField(
+                      cursorColor: Theme.of(context).colorScheme.secondary,
+                      controller: _emailcontroller,
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      decoration: InputDecoration(
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(
+                            color: Theme.of(context).colorScheme.secondary,
+                          ),
+                          borderRadius: BorderRadius.circular(30),
                         ),
-                      )),
+
+                        prefixIcon: Icon(Icons.email,
+                            color: Theme.of(context).colorScheme.secondary),
+                        hintText: 'Email',
+                        //errorText: 'Invalid Email',
+                        focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(30),
+                            borderSide: BorderSide(
+                                width: 2,
+                                color:
+                                    Theme.of(context).colorScheme.secondary)),
+                        errorBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(30),
+                            borderSide: BorderSide(color: Colors.red)),
+                        focusColor: Colors.blueAccent,
+                        labelText: 'Email',
+                        labelStyle: TextStyle(
+                            color: Theme.of(context).colorScheme.secondary),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                      ),
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return '*required';
+                        }
+                        if (!RegExp(
+                                r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+                            .hasMatch(value)) {
+                          return 'Enter a valid email!';
+                        }
+                        return null;
+                      }),
                 ),
                 SizedBox(height: 16),
                 Padding(
                   padding: const EdgeInsets.only(left: 30, right: 30),
-                  child: Container(
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(25),
-                        boxShadow: [BoxShadow(color: Colors.grey.shade300)]),
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 12, right: 12),
-                      child: TextFormField(
-                        obscureText: !isShowPass,
-                        controller: _pass,
-                        validator: (value) {
-                          if (value!.isEmpty || value.length <= 6) {
-                            return "Password mus be contains 6 characters";
-                          }
-                        },
-                        decoration: InputDecoration(
-                            prefixIcon: Icon(
-                              Icons.lock,
-                              color: Colors.black45,
-                            ),
-                            suffixIcon: InkWell(
-                                child: Icon(isShowPass
-                                    ? Icons.visibility_off
-                                    : Icons.visibility)),
-                            hintText: "Password",
-                            border: InputBorder.none),
+                  child: TextFormField(
+                    cursorColor: Theme.of(context).colorScheme.secondary,
+                    controller: _pass,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return '*required';
+                      }
+                      if (value.length <= 6) {
+                        return 'Password must be contain atleast 6 characters';
+                      }
+                    },
+                    obscureText: !isShowPass,
+                    decoration: InputDecoration(
+                      prefixIcon: Icon(Icons.lock,
+                          color: Theme.of(context).colorScheme.secondary),
+                      suffixIcon: InkWell(
+                        child: Icon(
+                            isShowPass
+                                ? Icons.visibility_off
+                                : Icons.visibility,
+                            color: Theme.of(context).colorScheme.secondary),
                         onTap: () {
                           setState(() {
                             if (isShowPass) {
@@ -149,41 +185,58 @@ class _SignupPageState extends State<SignupPage> {
                           });
                         },
                       ),
+                      hintText: 'Password',
+                      //errorText: 'Invalid Email',
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Theme.of(context).colorScheme.secondary,
+                        ),
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30),
+                          borderSide: BorderSide(
+                              width: 2,
+                              color: Theme.of(context).colorScheme.secondary)),
+                      errorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30),
+                          borderSide: BorderSide(color: Colors.red)),
+                      focusColor: Colors.blueAccent,
+                      labelText: 'Password',
+                      labelStyle: TextStyle(
+                          color: Theme.of(context).colorScheme.secondary),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
                     ),
                   ),
                 ),
                 SizedBox(height: 16),
                 Padding(
                   padding: const EdgeInsets.only(left: 30, right: 30),
-                  child: Container(
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(25),
-                        boxShadow: [BoxShadow(color: Colors.grey.shade300)]),
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 12, right: 12),
-                      child: TextFormField(
-                        obscureText: !isShowPass1,
-                        controller: _confirmpass,
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return 'Empty';
-                          }
-                          if (value != _pass.text) {
-                            return 'Password Does not match';
-                          }
-                          return null;
-                        },
-                        decoration: InputDecoration(
-                            prefixIcon: Icon(
-                              Icons.lock,
-                              color: Colors.black45,
-                            ),
-                            suffixIcon: InkWell(
-                                child: Icon(isShowPass1
-                                    ? Icons.visibility_off
-                                    : Icons.visibility)),
-                            hintText: "Confirm Password",
-                            border: InputBorder.none),
+                  child: TextFormField(
+                    controller: _confirmpass,
+                    cursorColor: Theme.of(context).colorScheme.secondary,
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return '*required';
+                      }
+                      if (value != _pass.text) {
+                        return 'Password Does not match';
+                      }
+                      return null;
+                    },
+                    obscureText: !isShowPass1,
+                    decoration: InputDecoration(
+                      prefixIcon: Icon(Icons.lock,
+                          color: Theme.of(context).colorScheme.secondary),
+                      suffixIcon: InkWell(
+                        child: Icon(
+                            isShowPass1
+                                ? Icons.visibility_off
+                                : Icons.visibility,
+                            color: Theme.of(context).colorScheme.secondary),
                         onTap: () {
                           setState(() {
                             if (isShowPass1) {
@@ -194,44 +247,134 @@ class _SignupPageState extends State<SignupPage> {
                           });
                         },
                       ),
+                      hintText: 'Confirm Password',
+                      //errorText: 'Invalid Email',
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(
+                          color: Theme.of(context).colorScheme.secondary,
+                        ),
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30),
+                          borderSide: BorderSide(
+                              width: 2,
+                              color: Theme.of(context).colorScheme.secondary)),
+                      errorBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(30),
+                          borderSide: BorderSide(color: Colors.red)),
+                      focusColor: Colors.blueAccent,
+                      labelText: 'Confirm Password',
+                      labelStyle: TextStyle(
+                          color: Theme.of(context).colorScheme.secondary),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
                     ),
                   ),
                 ),
-                SizedBox(height: 12),
+                SizedBox(height: 16),
                 InkWell(
                   onTap: () async {
                     if (_formKey.currentState!.validate()) {
-                      UserCredential usercredential = await FirebaseAuth.instance
-                          .createUserWithEmailAndPassword(
-                              email: _emailcontroller.text, password: _pass.text);
-                      if (usercredential.user != null) {
-                        Navigator.pushReplacement(context,
-                            MaterialPageRoute(builder: (context) => Dashboard()));
+                      setState(() {
+                        isLoading=true;
+                      });
+                      try {
+                        UserCredential usercredential = await FirebaseAuth
+                            .instance
+                            .createUserWithEmailAndPassword(
+                                email: _emailcontroller.text,
+                                password: _pass.text);
+
+                        if (usercredential.user != null) {
+                          Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => Dashboard()));
+                        }
+                      } on FirebaseAuthException catch (e) {
+                        if (e.code == 'email-already-in-use') {
+                          print('user already exists');
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('User already exists')));
+                        }
                       }
                     }
                   },
-                  child: Container(
-                    height: 40,
-                    width: 140,
-                    decoration: BoxDecoration(
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 30, right: 30),
+                    child: Container(
+                      height: 40,
+                      decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(20),
-                        gradient: LinearGradient(
-                            begin: Alignment.centerLeft,
-                            end: Alignment.centerRight,
-                            colors: [
-                              Colors.tealAccent,
-                              Colors.blue,
-                              Colors.pinkAccent,
-                            ])),
-                    child: Center(
-                        child: Text(
-                      'SignUp',
-                      style: TextStyle(
-                          color: Colors.white, fontWeight: FontWeight.bold),
-                    )),
+                        color: Theme.of(context).primaryColor,
+                        // gradient: LinearGradient(
+                        //     begin: Alignment.centerLeft,
+                        //     end: Alignment.centerRight,
+                        //     colors: [
+                        //       Colors.tealAccent,
+                        //       Colors.blue,
+                        //       Colors.pinkAccent,
+                        //     ]),
+                      ),
+                      child: Center(
+                          child: Container(
+                            child: isLoading?Container(height: 10, child: CircularProgressIndicator(color: Colors.white,)): Text(
+                        'SignUp',
+                        style: TextStyle(
+                              color: Colors.white, fontWeight: FontWeight.bold),
+                      ),
+                          )),
+                    ),
                   ),
                 ),
-                //SizedBox(height: 1),
+                SizedBox(height: 8),
+                Text(
+                  'OR',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: 8),
+                InkWell(
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 30, right: 30),
+                    child: Container(
+                      height: 42,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(30),
+                        color: Theme.of(context).colorScheme.secondary,
+                        // gradient: LinearGradient(
+                        //     begin: Alignment.centerLeft,
+                        //     end: Alignment.centerRight,
+                        //     colors: [
+                        //       Colors.tealAccent,
+                        //       Colors.blue,
+                        //       Colors.pinkAccent,
+                        //     ])
+                      ),
+                      child: Center(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            CircleAvatar(
+                              radius: 15,
+                              backgroundColor: Colors.white,
+                              backgroundImage: AssetImage(
+                                'lib/assets/google1.png',
+                              ),
+                            ),
+                            SizedBox(width: 8),
+                            Text(
+                              'Signup with Google',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -242,61 +385,21 @@ class _SignupPageState extends State<SignupPage> {
                             fontSize: 14)),
                     TextButton(
                       onPressed: () {
-                        Navigator.push(context,
-                            MaterialPageRoute(builder: (context) => LoginPage()));
+                        Navigator.pushAndRemoveUntil(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => LoginPage()),
+                            (route) => false);
                       },
                       child: Text(
                         'Login',
-                        style: TextStyle(color: Colors.pink,fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            color: Theme.of(context).colorScheme.secondary,
+                            fontWeight: FontWeight.bold),
                       ),
                     ),
                   ],
                 ),
-                SizedBox(height: 10),
-                InkWell(
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 30, right: 30),
-                    child: Container(
-                      height: 42,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(30),
-                          color: Colors.black87
-                          // gradient: LinearGradient(
-                          //     begin: Alignment.centerLeft,
-                          //     end: Alignment.centerRight,
-                          //     colors: [
-                          //       Colors.tealAccent,
-                          //       Colors.blue,
-                          //       Colors.pinkAccent,
-                          //     ])
-                          ),
-                      child: Center(
-                          child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          CircleAvatar(radius: 15,
-                            backgroundColor: Colors.white,
-                            
-                            backgroundImage: AssetImage(
-                              'lib/assets/google1.png',),
-                          ),
-                          SizedBox(width: 8),
-                          // Container(
-                          //   width: 20,
-                          //   height: 20,
-                          //   child: Image.asset('lib/assets/images.png',fit: BoxFit.contain),
-                          //   ),
-                          Text(
-                            'Signup with Google',
-                            style: TextStyle(
-                                color: Colors.white, fontWeight: FontWeight.bold),
-                          ),
-                          
-                        ],
-                      )),
-                    ),
-                  ),
-                )
               ],
             ),
           ),

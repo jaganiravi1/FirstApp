@@ -40,11 +40,11 @@ class _DashboardState extends State<Dashboard> {
       appBar: AppBar(
         title: Text('Music'),
         centerTitle: true,
-        backgroundColor: Colors.pink,
+        backgroundColor: Theme.of(context).primaryColor,
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: currentIndx,
-        fixedColor: Colors.pinkAccent,
+        fixedColor: Theme.of(context).primaryColor,
         unselectedItemColor: Colors.black45,
         onTap: (index) {
           setState(() {
@@ -65,25 +65,31 @@ class _DashboardState extends State<Dashboard> {
       drawer: Drawer(
         child: ListView(
           children: [
-            const UserAccountsDrawerHeader(
-              decoration: BoxDecoration(color: Colors.pinkAccent),
+            UserAccountsDrawerHeader(
+              decoration: BoxDecoration(color: Theme.of(context).primaryColor),
               currentAccountPicture: CircleAvatar(
                 backgroundColor: Colors.white,
-                child: Icon(Icons.person,color: Colors.pinkAccent,size: 38,),
+                child: Icon(
+                  Icons.person,
+                  color: Theme.of(context).primaryColor,
+                  size: 38,
+                ),
               ),
               accountEmail: Text('jaganiravi@gmail.com'),
-              accountName: Text('Ravi Jagani',
+              accountName: Text(
+                'Ravi Jagani',
                 style: TextStyle(fontSize: 18),
               ),
             ),
             ListTile(
               leading: Padding(
                 padding: const EdgeInsets.only(left: 16.0),
-                child: Icon(Icons.payment_outlined),
+                child: Icon(Icons.payment_outlined,
+                    color: Theme.of(context).colorScheme.secondary),
               ),
               title: Text(
                 'Payment Method',
-                style: TextStyle(color: Colors.black54),
+                style: Theme.of(context).textTheme.bodyText1,
               ),
               onTap: () {
                 Navigator.pop(context);
@@ -91,16 +97,17 @@ class _DashboardState extends State<Dashboard> {
             ),
             Divider(
               thickness: 0.8,
-              color: Color.fromARGB(255, 251, 189, 210),
+              color: Colors.black12,
             ),
             ListTile(
               leading: Padding(
                 padding: const EdgeInsets.only(left: 16.0),
-                child: Icon(Icons.location_city),
+                child: Icon(Icons.location_city,
+                    color: Theme.of(context).colorScheme.secondary),
               ),
               title: Text(
                 'Addresses',
-                style: TextStyle(color: Colors.black54),
+                style: Theme.of(context).textTheme.bodyText1,
               ),
               onTap: () {
                 Navigator.pop(context);
@@ -108,16 +115,17 @@ class _DashboardState extends State<Dashboard> {
             ),
             Divider(
               thickness: 0.8,
-              color: Color.fromARGB(255, 251, 189, 210),
+              color: Colors.black12,
             ),
             ListTile(
               leading: Padding(
                 padding: const EdgeInsets.only(left: 16.0),
-                child: Icon(Icons.privacy_tip),
+                child: Icon(Icons.privacy_tip,
+                    color: Theme.of(context).colorScheme.secondary),
               ),
               title: Text(
                 'Password',
-                style: TextStyle(color: Colors.black54),
+                style: Theme.of(context).textTheme.bodyText1,
               ),
               onTap: () {
                 Navigator.pop(context);
@@ -125,16 +133,17 @@ class _DashboardState extends State<Dashboard> {
             ),
             Divider(
               thickness: 0.8,
-              color: Color.fromARGB(255, 251, 189, 210),
+              color: Colors.black12,
             ),
             ListTile(
               leading: Padding(
                 padding: const EdgeInsets.only(left: 16.0),
-                child: Icon(Icons.more),
+                child: Icon(Icons.more,
+                    color: Theme.of(context).colorScheme.secondary),
               ),
               title: Text(
                 'Other',
-                style: TextStyle(color: Colors.black54),
+                style: Theme.of(context).textTheme.bodyText1,
               ),
               onTap: () {
                 Navigator.pop(context);
@@ -142,21 +151,72 @@ class _DashboardState extends State<Dashboard> {
             ),
             Divider(
               thickness: 0.8,
-              color: Color.fromARGB(255, 251, 189, 210),
+              color: Colors.black12,
             ),
             ListTile(
               leading: Padding(
                 padding: const EdgeInsets.only(left: 16.0),
-                child: Icon(Icons.logout),
+                child: Icon(Icons.logout,
+                    color: Theme.of(context).colorScheme.secondary),
               ),
               title: Text(
                 'Sign out',
-                style: TextStyle(color: Colors.black54),
+                style: Theme.of(context).textTheme.bodyText1,
               ),
               onTap: () {
-                FirebaseAuth.instance.signOut();
-                
-                Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context)=>LoginPage()), (route) => false);
+                showDialog(
+                    context: context,
+                    builder: ((context) => AlertDialog(
+                          title: Text(
+                            'Are you sure want to signout?',
+                            style: TextStyle(
+                                fontSize: 16, fontWeight: FontWeight.w500),
+                          ),
+                          actions: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                ElevatedButton(
+                                  style: ButtonStyle(
+                                      backgroundColor:
+                                          MaterialStatePropertyAll(Colors.red)),
+                                  onPressed: () {
+                                    FirebaseAuth.instance.signOut();
+
+                                    Navigator.pushAndRemoveUntil(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => LoginPage()),
+                                        (route) => false);
+                                  },
+                                  child: Text(
+                                    'Yes',
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                ),
+                                SizedBox(width: 8),
+                                ElevatedButton(
+                                  style: ButtonStyle(
+                                      elevation: MaterialStatePropertyAll(0),
+                                      side: MaterialStatePropertyAll(BorderSide(
+                                        color: Colors.redAccent,
+                                      )),
+                                      backgroundColor: MaterialStatePropertyAll(
+                                          Colors.transparent)),
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: Text(
+                                    'No',
+                                    style: TextStyle(color: Colors.red),
+                                  ),
+                                )
+                              ],
+                            ),
+                          ],
+                        )));
               },
             ),
           ],
