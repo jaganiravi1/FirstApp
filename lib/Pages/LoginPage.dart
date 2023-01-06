@@ -301,10 +301,11 @@ class _LoginPageState extends State<LoginPage> {
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
                 SizedBox(height: 8),
-
+                //duyiuwyf
                 InkWell(
-                  onTap: ()async {
-                    final UserCredential = await AuthService().signInWithGoogle();
+                  onTap: () async {
+                    final UserCredential =
+                        await AuthService().signInWithGoogle();
                     if (UserCredential != null) {
                       Navigator.pushReplacement(context,
                           MaterialPageRoute(builder: (context) => Dashboard()));
