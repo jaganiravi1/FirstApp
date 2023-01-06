@@ -1,9 +1,14 @@
+//import 'dart:html';
+
+import 'package:application/Authntication/auth.dart';
 import 'package:application/Pages/Dashboard.dart';
 import 'package:application/Pages/LoginPage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
@@ -17,6 +22,7 @@ class _SignupPageState extends State<SignupPage> {
   bool isLoading = false;
   bool isShowPass = false;
   bool isShowPass1 = false;
+  GoogleSignIn _googleSignIn = GoogleSignIn();
   final TextEditingController _pass = TextEditingController();
   final TextEditingController _confirmpass = TextEditingController();
   final TextEditingController _emailcontroller = TextEditingController();
@@ -278,7 +284,7 @@ class _SignupPageState extends State<SignupPage> {
                   onTap: () async {
                     if (_formKey.currentState!.validate()) {
                       setState(() {
-                        isLoading=true;
+                        isLoading = true;
                       });
                       try {
                         UserCredential usercredential = await FirebaseAuth
@@ -286,6 +292,10 @@ class _SignupPageState extends State<SignupPage> {
                             .createUserWithEmailAndPassword(
                                 email: _emailcontroller.text,
                                 password: _pass.text);
+
+                                User? user = await usercredential.user;
+
+                                await user?.updateDisplayName(_usernamecontroller.text);
 
                         if (usercredential.user != null) {
                           Navigator.pushReplacement(
@@ -296,7 +306,8 @@ class _SignupPageState extends State<SignupPage> {
                       } on FirebaseAuthException catch (e) {
                         if (e.code == 'email-already-in-use') {
                           print('user already exists');
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('User already exists')));
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text('User already exists')));
                         }
                       }
                     }
@@ -319,12 +330,20 @@ class _SignupPageState extends State<SignupPage> {
                       ),
                       child: Center(
                           child: Container(
-                            child: isLoading?Container(height: 10, child: CircularProgressIndicator(color: Colors.white,)): Text(
-                        'SignUp',
-                        style: TextStyle(
-                              color: Colors.white, fontWeight: FontWeight.bold),
-                      ),
-                          )),
+                        child: isLoading
+                            ? Container(
+                                height: 28,
+                                child: SpinKitCircle(
+                                    color: Colors.white,
+                                    size: 36,
+                                ))
+                            : Text(
+                                'SignUp',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold),
+                              ),
+                      )),
                     ),
                   ),
                 ),
@@ -335,6 +354,48 @@ class _SignupPageState extends State<SignupPage> {
                 ),
                 SizedBox(height: 8),
                 InkWell(
+                  onTap: () async {
+                    final UserCredential = AuthService().signInWithGoogle();
+                    if (UserCredential != null) {
+                      Navigator.pushReplacement(context,
+                          MaterialPageRoute(builder: (context) => Dashboard()));
+                    } else {
+                      ScaffoldMessenger.of(context)
+                          .showSnackBar(SnackBar(content: Text('Wrong')));
+                    }
+                  },
+
+                  //                  try {
+
+                  //                   final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+
+                  // // Obtain the auth details from the request
+                  // final GoogleSignInAuthentication? googleAuth = await googleUser?.authentication;
+
+                  // // Create a new credential
+                  // final credential = GoogleAuthProvider.credential(
+                  //   accessToken: googleAuth?.accessToken,
+                  //   idToken: googleAuth?.idToken,
+                  // );
+
+                  // // Once signed in, return the UserCredential
+                  // UserCredential userCredential= await FirebaseAuth.instance.signInWithCredential(credential);
+
+                  // if(userCredential!=null){
+                  //   print(userCredential.user!.email);
+                  //   Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>Dashboard()));
+                  // }
+                  //                  } catch (e) {
+                  //                    print(e.toString());
+                  //                  }
+
+                  //_googleSignIn.signIn();
+
+                  // Future<UserCredential> signInWithGoogle async(){
+                  //   final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+                  //   final GoogleSignInAuthentication? googleAuth = googl
+                  // }
+
                   child: Padding(
                     padding: const EdgeInsets.only(left: 30, right: 30),
                     child: Container(

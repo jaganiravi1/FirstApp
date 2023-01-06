@@ -22,12 +22,16 @@ class _ResetPassState extends State<ResetPass> {
           backgroundColor: Colors.transparent,
           leading: InkWell(
             child: Container(
-              
-              child: Icon(Icons.keyboard_arrow_left,color: Theme.of(context).colorScheme.secondary,size: 34,)),
+                child: Icon(
+              Icons.keyboard_arrow_left,
+              color: Theme.of(context).colorScheme.secondary,
+              size: 34,
+            )),
             onTap: () {
-              Navigator.pushReplacement(context, MaterialPageRoute(builder: ((context) => LoginPage())));
+              Navigator.pushReplacement(context,
+                  MaterialPageRoute(builder: ((context) => LoginPage())));
             },
-            ),
+          ),
         ),
         body: Column(children: [
           Center(
@@ -48,8 +52,7 @@ class _ResetPassState extends State<ResetPass> {
                     style: TextStyle(
                         color: Theme.of(context).colorScheme.secondary,
                         fontWeight: FontWeight.w400,
-                        
-                        fontSize:12),
+                        fontSize: 12),
                   ),
                 ],
               ),
@@ -83,12 +86,12 @@ class _ResetPassState extends State<ResetPass> {
           ),
           SizedBox(height: 20),
           ElevatedButton(
-    
               style: ButtonStyle(
-    shape: MaterialStatePropertyAll(RoundedRectangleBorder(borderRadius: BorderRadius.circular(30))),
+                  shape: MaterialStatePropertyAll(RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(30))),
                   backgroundColor: MaterialStatePropertyAll(
-                Theme.of(context).colorScheme.secondary,
-              )),
+                    Theme.of(context).colorScheme.secondary,
+                  )),
               onPressed: () async {
                 try {
                   await FirebaseAuth.instance

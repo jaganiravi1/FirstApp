@@ -1,3 +1,4 @@
+import 'package:application/Authntication/auth.dart';
 import 'package:application/Pages/LoginPage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -14,6 +15,23 @@ class Dashboard extends StatefulWidget {
 
 class _DashboardState extends State<Dashboard> {
   int currentIndx = 0;
+AuthService _authService=AuthService();
+User? _user= null;
+
+String? Email = "Not Found!";
+String? userName = "Not Found!";
+@override
+  void initState() {
+     _user = _authService.getUser();
+     setState(() {
+       Email=_user?.email;
+       userName = _user?.displayName;
+     });
+    // TODO: implement initState
+    super.initState();
+  }
+  
+
 
   List<Widget> screens = [
     Center(
@@ -43,6 +61,7 @@ class _DashboardState extends State<Dashboard> {
         backgroundColor: Theme.of(context).primaryColor,
       ),
       bottomNavigationBar: BottomNavigationBar(
+
         currentIndex: currentIndx,
         fixedColor: Theme.of(context).primaryColor,
         unselectedItemColor: Colors.black45,
@@ -75,9 +94,9 @@ class _DashboardState extends State<Dashboard> {
                   size: 38,
                 ),
               ),
-              accountEmail: Text('jaganiravi@gmail.com'),
+              accountEmail: Text(Email ?? "Not found"),
               accountName: Text(
-                'Ravi Jagani',
+                userName?? "Not found",
                 style: TextStyle(fontSize: 18),
               ),
             ),

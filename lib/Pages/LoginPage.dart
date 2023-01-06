@@ -5,6 +5,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
+
+import '../Authntication/auth.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -19,6 +22,7 @@ class _LoginPageState extends State<LoginPage> {
   final TextEditingController _pass = TextEditingController();
   var _formKey = GlobalKey<FormState>();
   bool isLoading = false;
+  bool isLoading1 = false;
 
   @override
   Widget build(BuildContext context) {
@@ -195,7 +199,10 @@ class _LoginPageState extends State<LoginPage> {
                     children: [
                       TextButton(
                           onPressed: () {
-                            Navigator.push(context, MaterialPageRoute(builder: (context)=>ResetPass()));
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => ResetPass()));
                           },
                           child: Text(
                             'Forgot password?',
@@ -255,34 +262,103 @@ class _LoginPageState extends State<LoginPage> {
                       //
                     }
                   },
-                  child: Container(
-                    height: 40,
-                    width: 140,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        color: Theme.of(context).primaryColor
-                        // gradient: const LinearGradient(
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 30, right: 30),
+                    child: Container(
+                      height: 42,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          color: Theme.of(context).primaryColor
+                          // gradient: const LinearGradient(
+                          //     begin: Alignment.centerLeft,
+                          //     end: Alignment.centerRight,
+                          //     colors: [
+                          //       Colors.tealAccent,
+                          //       Colors.blue,
+                          //       Colors.pinkAccent,
+                          //     ]),
+                          ),
+                      child: Center(
+                          child: isLoading
+                              ? Container(
+                                  height: 28,
+                                  child: SpinKitCircle(
+                                    color: Colors.white,
+                                    size: 36,
+                                  ))
+                              : Text(
+                                  'LOGIN',
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold),
+                                )),
+                    ),
+                  ),
+                ),
+                SizedBox(height: 8),
+                Text(
+                  'OR',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: 8),
+
+                InkWell(
+                  onTap: ()async {
+                    final UserCredential = await AuthService().signInWithGoogle();
+                    if (UserCredential != null) {
+                      Navigator.pushReplacement(context,
+                          MaterialPageRoute(builder: (context) => Dashboard()));
+                    } else {
+                      ScaffoldMessenger.of(context)
+                          .showSnackBar(SnackBar(content: Text('Wrong')));
+                    }
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 30, right: 30),
+                    child: Container(
+                      height: 42,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(30),
+                        color: Theme.of(context).colorScheme.secondary,
+                        // gradient: LinearGradient(
                         //     begin: Alignment.centerLeft,
                         //     end: Alignment.centerRight,
                         //     colors: [
                         //       Colors.tealAccent,
                         //       Colors.blue,
                         //       Colors.pinkAccent,
-                        //     ]),
+                        //     ])
+                      ),
+                      child: Center(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            CircleAvatar(
+                              radius: 15,
+                              backgroundColor: Colors.white,
+                              backgroundImage: AssetImage(
+                                'lib/assets/google1.png',
+                              ),
+                            ),
+                            SizedBox(width: 8),
+                            Center(
+                              child: isLoading1
+                                  ? Container(
+                                      child: SpinKitCircle(
+                                      color: Colors.white,
+                                      size: 28,
+                                    ))
+                                  : (Text(
+                                      'Continue With Google',
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold),
+                                    )),
+                            ),
+                          ],
                         ),
-                    child: Center(
-                        child: isLoading
-                            ? Container(
-                                height: 8,
-                                child: CircularProgressIndicator(
-                                  color: Colors.white,
-                                ))
-                            : Text(
-                                'LOGIN',
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold),
-                              )),
+                      ),
+                    ),
                   ),
                 ),
                 //SizedBox(height: 1),
