@@ -3,6 +3,7 @@ import 'package:application/resources/color_manager.dart';
 import 'package:application/resources/string_manager.dart';
 import 'package:application/ui/dialogs/dialog_box.dart';
 import 'package:application/ui/screens/login_page/login_page.dart';
+import 'package:application/user_preferences/user_preferences.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -20,6 +21,7 @@ class _DrawerPageState extends State<DrawerPage> {
   String? email, userName;
   
    final AuthService _authService = AuthService();
+   
   User? _user;
   
   @override

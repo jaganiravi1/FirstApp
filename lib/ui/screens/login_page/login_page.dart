@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_final_fields
 
 import 'package:application/Authntication/auth.dart';
+import 'package:application/model/customer.dart';
 import 'package:application/resources/assets_manager.dart';
 import 'package:application/ui/screens/dashboard/dashboard.dart';
 import 'package:application/ui/screens/resetpass_page/resetpass_page.dart';
@@ -8,6 +9,7 @@ import 'package:application/ui/screens/signup_page/signup_page.dart';
 import 'package:application/ui/utilites/border_dec.dart';
 import 'package:application/resources/color_manager.dart';
 import 'package:application/resources/string_manager.dart';
+import 'package:application/user_preferences/user_preferences.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -155,6 +157,10 @@ class _LoginPageState extends State<LoginPage> {
 
                       await _authService.loginUser(email: _emailcontroller.text , password: _pass.text, context: context);
 
+                      
+
+                     
+
                       setState(() {
                         isLoading=false;
                       });
@@ -229,7 +235,7 @@ class _LoginPageState extends State<LoginPage> {
                                 IconAssets.ic_google,
                               ),
                             ),
-                            SizedBox(width: 8),
+                            const SizedBox(width: 8),
                             Center(
                               child: isLoading1
                                   ? Container(
@@ -268,7 +274,7 @@ class _LoginPageState extends State<LoginPage> {
                           Navigator.pushAndRemoveUntil(
                               context,
                               MaterialPageRoute(
-                                  builder: (context) => SignupPage()),
+                                  builder: (context) => const SignupPage()),
                               (route) => false);
                         },
                         child: Text(

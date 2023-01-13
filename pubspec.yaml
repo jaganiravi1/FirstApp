@@ -40,11 +40,11 @@ dependencies:
   firebase_auth: ^4.2.4
   http: ^0.13.5
   email_auth: ^1.0.0
-  shared_preferences: ^2.0.15
   google_sign_in: ^5.4.2
   flutter_spinkit: ^5.1.0
   cloud_firestore: ^4.3.1
   firebase_database: ^10.0.9
+  shared_preferences: ^2.0.16
 
 
 dev_dependencies:

@@ -1,8 +1,10 @@
 import 'package:application/resources/string_manager.dart';
+import 'package:application/user_preferences/user_preferences.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
+import '../model/customer.dart';
 import '../ui/screens/dashboard/dashboard.dart';
 
 class AuthService {
@@ -41,6 +43,11 @@ class AuthService {
       User? user = usercredential.user;
 
       await user?.updateDisplayName(userName);
+      await UserPreferences.saveLoginUserInfo(ModelCustomer(
+                            id: user!.uid,
+                            name: userName,
+                            email: email));
+                            print("Signup EMAIL:${await UserPreferences.getUserEmail()}");
 
       if (usercredential.user != null) {
         // ignore: use_build_context_synchronously
@@ -65,6 +72,12 @@ class AuthService {
     try {
       UserCredential userCredential = await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
+      await UserPreferences.saveLoginUserInfo(ModelCustomer(
+          email: email,
+          id: userCredential.user!.uid,
+          name: userCredential.user!.displayName));
+          print("Login Email  :  ${await UserPreferences.getUserEmail()}");
+
       if (userCredential.user != null) {
         // ignore: use_build_context_synchronously
         Navigator.pushReplacement(context,
@@ -84,31 +97,31 @@ class AuthService {
   }
 }
 
-class Auth {
-  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
+// class Auth {
+//   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
 
-  User? get currentUser => _firebaseAuth.currentUser;
+//   User? get currentUser => _firebaseAuth.currentUser;
 
-  Stream<User?> get authStateChanges => _firebaseAuth.authStateChanges();
+//   Stream<User?> get authStateChanges => _firebaseAuth.authStateChanges();
 
-  Future<void> signInWithEmailAndPassword({
-    required String email,
-    required String password,
-  }) async {
-    await _firebaseAuth.signInWithEmailAndPassword(
-        email: email, password: password);
-  }
+//   Future<void> signInWithEmailAndPassword({
+//     required String email,
+//     required String password,
+//   }) async {
+//     await _firebaseAuth.signInWithEmailAndPassword(
+//         email: email, password: password);
+//   }
 
-  Future<void> createUserWithEmailAndPassword({
-    required String email,
-    required String password,
-  }) async {
-    await _firebaseAuth.createUserWithEmailAndPassword(
-        email: email, password: password);
-  }
-//signout
-  Future<void> signOut() async {
-    await _firebaseAuth.signOut();
-  }
+//   Future<void> createUserWithEmailAndPassword({
+//     required String email,
+//     required String password,
+//   }) async {
+//     await _firebaseAuth.createUserWithEmailAndPassword(
+//         email: email, password: password);
+//   }
+// //signout
+//   Future<void> signOut() async {
+//     await _firebaseAuth.signOut();
+//   }
+// // }
 // }
-}

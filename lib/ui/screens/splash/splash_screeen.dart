@@ -6,9 +6,6 @@ import 'package:application/resources/string_manager.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-
-
-
 import '../dashboard/dashboard.dart';
 import '../login_page/login_page.dart';
 
@@ -23,14 +20,18 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    Timer(Duration(seconds: 3), () {
+    Timer(const Duration(seconds: 3), () {
       FirebaseAuth.instance.authStateChanges().listen((User? user) {
         if (user != null) {
-          Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (context) => Dashboard()));
+          if (mounted) {
+            Navigator.pushReplacement(context,
+                MaterialPageRoute(builder: (context) => const Dashboard()));
+          }
         } else {
-          Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (context) => LoginPage()));
+          if (mounted) {
+            Navigator.pushReplacement(context,
+                MaterialPageRoute(builder: (context) => const LoginPage()));
+          }
         }
         ;
       });
@@ -44,7 +45,6 @@ class _SplashScreenState extends State<SplashScreen> {
       height: MediaQuery.of(context).size.height,
       width: MediaQuery.of(context).size.width,
       color: ColorManager.primary,
-      
       child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -58,7 +58,8 @@ class _SplashScreenState extends State<SplashScreen> {
             // SizedBox(
             //   height: 1,
             // ),
-            Text(StringManager.splashscreenText,
+            Text(
+              StringManager.splashscreenText,
               style: TextStyle(
                 color: ColorManager.white,
                 fontStyle: FontStyle.italic,

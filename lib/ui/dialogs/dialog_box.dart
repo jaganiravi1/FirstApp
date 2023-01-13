@@ -1,3 +1,4 @@
+import 'package:application/user_preferences/user_preferences.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
@@ -18,9 +19,13 @@ class AlertDialogBox {
             ElevatedButton(
               style: const ButtonStyle(
                   backgroundColor: MaterialStatePropertyAll(Colors.red)),
-              onPressed: () {
+              onPressed: () async {
                 FirebaseAuth.instance.signOut();
+                await UserPreferences.clearDetailsOnSignOut();
+                print("after signout:${await UserPreferences.getUserEmail()}");
+                
 
+                // ignore: use_build_context_synchronously
                 Navigator.pushAndRemoveUntil(
                     context,
                     MaterialPageRoute(builder: (context) => const LoginPage()),

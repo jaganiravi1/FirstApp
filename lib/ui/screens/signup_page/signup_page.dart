@@ -1,11 +1,13 @@
 //import 'dart:html';
 
 import 'package:application/Authntication/auth.dart';
+import 'package:application/model/customer.dart';
 import 'package:application/resources/assets_manager.dart';
 import 'package:application/resources/color_manager.dart';
 import 'package:application/resources/string_manager.dart';
 import 'package:application/ui/screens/dashboard/dashboard.dart';
 import 'package:application/ui/screens/login_page/login_page.dart';
+import 'package:application/user_preferences/user_preferences.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -21,6 +23,7 @@ class SignupPage extends StatefulWidget {
 }
 
 class _SignupPageState extends State<SignupPage> {
+  AuthService _authService = AuthService();
   var _formKey = GlobalKey<FormState>();
   bool isLoading = false;
   bool isShowPass = false;
@@ -80,23 +83,20 @@ class _SignupPageState extends State<SignupPage> {
                           borderRadius: BorderRadius.circular(30),
                         ),
 
-                        prefixIcon: Icon(Icons.person,
-                            color: ColorManager.secondary),
+                        prefixIcon:
+                            Icon(Icons.person, color: ColorManager.secondary),
                         hintText: StringManager.Username,
                         //errorText: 'Invalid Email',
                         focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(30),
                             borderSide: BorderSide(
-                                width: 2,
-                                color:
-                                    ColorManager.secondary)),
+                                width: 2, color: ColorManager.secondary)),
                         errorBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(30),
                             borderSide: BorderSide(color: Colors.red)),
 
                         labelText: StringManager.Username,
-                        labelStyle: TextStyle(
-                            color: ColorManager.secondary),
+                        labelStyle: TextStyle(color: ColorManager.secondary),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(30),
                         ),
@@ -118,7 +118,10 @@ class _SignupPageState extends State<SignupPage> {
                       cursorColor: ColorManager.secondary,
                       controller: _emailcontroller,
                       autovalidateMode: AutovalidateMode.onUserInteraction,
-                     decoration: CommonUtilites.getInputDec(StringManager.email, Icons.email, StringManager.email),
+                      decoration: CommonUtilites.getInputDec(
+                          StringManager.email,
+                          Icons.email,
+                          StringManager.email),
                       validator: (value) {
                         if (value!.isEmpty) {
                           return StringManager.required;
@@ -135,88 +138,71 @@ class _SignupPageState extends State<SignupPage> {
                 Padding(
                   padding: const EdgeInsets.only(left: 30, right: 30),
                   child: TextFormField(
-                    cursorColor: ColorManager.secondary,
-                    controller: _pass,
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return StringManager.required;
-                      }
-                      if (value.length <= 6) {
-                        return StringManager.passwordCondition;
-                      }
-                    },
-                    obscureText: !isShowPass,
-                    decoration: CommonUtilites.getPassInputDec(StringManager.password,isLocked:isShowPass , Icons.lock, StringManager.password, (){
-                     setState(() {
-                             if (isShowPass) {
-                               isShowPass = false;
-                             } else {
-                               isShowPass = true;
-                             }
-                           });
-                    })
-                  ),
+                      cursorColor: ColorManager.secondary,
+                      controller: _pass,
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return StringManager.required;
+                        }
+                        if (value.length <= 6) {
+                          return StringManager.passwordCondition;
+                        }
+                      },
+                      obscureText: !isShowPass,
+                      decoration: CommonUtilites.getPassInputDec(
+                          StringManager.password,
+                          isLocked: isShowPass,
+                          Icons.lock,
+                          StringManager.password, () {
+                        setState(() {
+                          if (isShowPass) {
+                            isShowPass = false;
+                          } else {
+                            isShowPass = true;
+                          }
+                        });
+                      })),
                 ),
                 SizedBox(height: 16),
                 Padding(
                   padding: const EdgeInsets.only(left: 30, right: 30),
                   child: TextFormField(
-                    controller: _confirmpass,
-                    cursorColor: ColorManager.secondary,
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return StringManager.required;
-                      }
-                      if (value != _pass.text) {
-                        return StringManager.passwordNotMatch;
-                      }
-                      return null;
-                    },
-                    obscureText: !isShowPass1,
-                    decoration: CommonUtilites.getPassInputDec(StringManager.confirmPass,isLocked:isShowPass1 , Icons.lock, StringManager.confirmPass, (){
-                     setState(() {
-                             if (isShowPass1) {
-                               isShowPass1 = false;
-                             } else {
-                               isShowPass1 = true;
-                             }
-                           });
-                    })
-                  ),
+                      controller: _confirmpass,
+                      cursorColor: ColorManager.secondary,
+                      autovalidateMode: AutovalidateMode.onUserInteraction,
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return StringManager.required;
+                        }
+                        if (value != _pass.text) {
+                          return StringManager.passwordNotMatch;
+                        }
+                        return null;
+                      },
+                      obscureText: !isShowPass1,
+                      decoration: CommonUtilites.getPassInputDec(
+                          StringManager.confirmPass,
+                          isLocked: isShowPass1,
+                          Icons.lock,
+                          StringManager.confirmPass, () {
+                        setState(() {
+                          if (isShowPass1) {
+                            isShowPass1 = false;
+                          } else {
+                            isShowPass1 = true;
+                          }
+                        });
+                      })),
                 ),
-                SizedBox(height: 16),
+                const SizedBox(height: 16),
                 InkWell(
                   onTap: () async {
                     if (_formKey.currentState!.validate()) {
                       setState(() {
                         isLoading = true;
                       });
-                      try {
-                        UserCredential usercredential = await FirebaseAuth
-                            .instance
-                            .createUserWithEmailAndPassword(
-                                email: _emailcontroller.text,
-                                password: _pass.text);
-
-                        User? user = await usercredential.user;
-
-                        await user?.updateDisplayName(_usernamecontroller.text);
-
-                        if (usercredential.user != null) {
-                          Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => Dashboard()));
-                        }
-                      } on FirebaseAuthException catch (e) {
-                        if (e.code == 'email-already-in-use') {
-                          print(StringManager.userExists);
-                          ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text(StringManager.userExists)));
-                        }
-                      }
+                      _authService.createNewAccount(email: _emailcontroller.text, userName: _usernamecontroller.text, password: _pass.text,context: context);
                     }
                   },
                   child: Padding(
@@ -226,14 +212,13 @@ class _SignupPageState extends State<SignupPage> {
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(20),
                         color: ColorManager.primary,
-                        
                       ),
                       child: Center(
                           child: Container(
                         child: isLoading
                             ? Container(
                                 height: 28,
-                                child: SpinKitCircle(
+                                child: const SpinKitCircle(
                                   color: Colors.white,
                                   size: 36,
                                 ))
@@ -260,12 +245,10 @@ class _SignupPageState extends State<SignupPage> {
                       Navigator.pushReplacement(context,
                           MaterialPageRoute(builder: (context) => Dashboard()));
                     } else {
-                      ScaffoldMessenger.of(context)
-                          .showSnackBar(SnackBar(content: Text(StringManager.wrong)));
+                      ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text(StringManager.wrong)));
                     }
                   },
-
-
                   child: Padding(
                     padding: const EdgeInsets.only(left: 30, right: 30),
                     child: Container(
@@ -273,7 +256,6 @@ class _SignupPageState extends State<SignupPage> {
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(30),
                         color: ColorManager.secondary,
-                        
                       ),
                       child: Center(
                         child: Row(
