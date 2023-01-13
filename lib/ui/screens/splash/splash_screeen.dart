@@ -1,10 +1,16 @@
 import 'dart:async';
 
-import 'package:application/Pages/Dashboard.dart';
+import 'package:application/resources/assets_manager.dart';
+import 'package:application/resources/color_manager.dart';
+import 'package:application/resources/string_manager.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
-import 'package:application/Pages/LoginPage.dart';
+
+
+
+import '../dashboard/dashboard.dart';
+import '../login_page/login_page.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({Key? key}) : super(key: key);
@@ -37,22 +43,14 @@ class _SplashScreenState extends State<SplashScreen> {
         body: Container(
       height: MediaQuery.of(context).size.height,
       width: MediaQuery.of(context).size.width,
-      color: Theme.of(context).primaryColor,
-      // decoration: BoxDecoration(
-      //     gradient: LinearGradient(
-      //         begin: Alignment.topLeft,
-      //         end: Alignment.bottomRight,
-      //         colors: [
-      //       Colors.tealAccent,
-      //       Colors.blue,
-      //       Colors.pinkAccent,
-      //     ])),
+      color: ColorManager.primary,
+      
       child: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Image.asset(
-              'lib/assets/logo1.png',
+              ImageAssets.splashLogo,
               height: 150,
               fit: BoxFit.fill,
             ),
@@ -60,10 +58,9 @@ class _SplashScreenState extends State<SplashScreen> {
             // SizedBox(
             //   height: 1,
             // ),
-            Text(
-              "Shoppy",
+            Text(StringManager.splashscreenText,
               style: TextStyle(
-                color: Colors.white,
+                color: ColorManager.white,
                 fontStyle: FontStyle.italic,
                 fontWeight: FontWeight.w600,
                 fontSize: 22.0,
