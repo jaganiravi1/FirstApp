@@ -3,6 +3,7 @@ import 'package:application/ui/screens/product_page/products_list.dart';
 import 'package:application/resources/color_manager.dart';
 import 'package:application/resources/fonts_manager.dart';
 import 'package:application/resources/styles_manager.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -18,30 +19,19 @@ class _MyListsState extends State<MyLists> {
   Map lists = {};
   List<String> docID = [];
   FirebaseFirestore firestore = FirebaseFirestore.instance;
-  //get docID
-  Future getDocId() async {
-    await FirebaseFirestore.instance
-        .collection('lists')
-        .get()
-        .then((snapshot) => snapshot.docs.forEach((document) {
-             // print({document.reference});
-              docID.add(document.reference.id);
-            }));
-  }
-
-  //String? documentId = null;
-
+  static String? uid = FirebaseAuth.instance.currentUser?.uid;
 
   addList() {
     Map<String, dynamic> demolists = {
       "name": _listNameController.text,
       "qty": 0,
-      "total": 0
+      "total": 0,
+      "uid": uid,
     };
 
     //refer to collections
     CollectionReference collectionReference =
-        FirebaseFirestore.instance.collection('lists');
+        FirebaseFirestore.instance.collection('wishlist');
     collectionReference.add(demolists).whenComplete(
         () => ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
               content: Text(StringManager.itemAdded),
@@ -64,7 +54,8 @@ class _MyListsState extends State<MyLists> {
                 children: [
                   Icon(Icons.arrow_back, color: ColorManager.secondary),
                   const SizedBox(width: 10),
-                  Text(StringManager.listPagebar,
+                  Text(
+                    StringManager.listPagebar,
                     style: getBoldStyle(
                         fontSize: FontSize.s18, color: ColorManager.secondary),
                   ),
@@ -87,8 +78,11 @@ class _MyListsState extends State<MyLists> {
             alignment: Alignment.center,
             children: [
               StreamBuilder<QuerySnapshot>(
-                stream:
-                    FirebaseFirestore.instance.collection('lists').snapshots(),
+                stream: FirebaseFirestore.instance
+                    .collection('wishlist')
+                    .where("uid",
+                        isEqualTo: FirebaseAuth.instance.currentUser?.uid)
+                    .snapshots(),
 
                 //lists.doc(documentId).get(),
                 builder: (context, snapshot) {
@@ -97,6 +91,8 @@ class _MyListsState extends State<MyLists> {
                     return ListView.builder(
                         itemCount: snapshot.data?.docs.length,
                         itemBuilder: (context, index) {
+                          QueryDocumentSnapshot<Object?> documentSnapshot =
+                              snapshot.data!.docs.elementAt(index);
                           //print(snapshot.data?.docs[index]['name'] ?? '');
                           return Padding(
                               padding:
@@ -107,6 +103,7 @@ class _MyListsState extends State<MyLists> {
                                       context,
                                       MaterialPageRoute(
                                           builder: (context) => ProductList(
+                                                wId: documentSnapshot.id,
                                                 tittle:
                                                     "${snapshot.data?.docs[index]['name']}",
                                               )));
@@ -127,14 +124,19 @@ class _MyListsState extends State<MyLists> {
                                               MainAxisAlignment.spaceBetween,
                                           children: [
                                             Text(
-                                                snapshot.data?.docs[index]['name'] ??'',
+                                                snapshot.data?.docs[index]
+                                                        ['name'] ??
+                                                    '',
                                                 style: const TextStyle(
                                                     fontSize: 18,
                                                     fontWeight:
                                                         FontWeight.w500)),
                                             Container(
                                               height: 100,
-                                              width: 100,
+                                              width: MediaQuery.of(context)
+                                                      .size
+                                                      .width *
+                                                  0.3,
                                               decoration: BoxDecoration(
                                                   color:
                                                       ColorManager.lightgreen,

@@ -1,5 +1,6 @@
 import 'package:application/resources/string_manager.dart';
 import 'package:application/user_preferences/user_preferences.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -48,6 +49,10 @@ class AuthService {
                             name: userName,
                             email: email));
                             print("Signup EMAIL:${await UserPreferences.getUserEmail()}");
+
+      FirebaseFirestore.instance.collection("User").doc(usercredential.user?.uid ).set({"uid":usercredential.user?.uid,
+      "userName":userName,"email":email
+      });
 
       if (usercredential.user != null) {
         // ignore: use_build_context_synchronously

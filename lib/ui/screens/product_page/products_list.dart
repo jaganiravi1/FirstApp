@@ -3,56 +3,28 @@ import 'package:application/resources/color_manager.dart';
 import 'package:application/resources/fonts_manager.dart';
 import 'package:application/resources/styles_manager.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_database/firebase_database.dart' as db;
 import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
 
 import 'product_card.dart';
 
+// ignore: must_be_immutable
 class ProductList extends StatefulWidget {
   final String tittle;
-
-  const ProductList({super.key, required this.tittle});
+  String wId;
+  ProductList({super.key, required this.wId, required this.tittle});
 
   @override
   State<ProductList> createState() => _ProductListState();
 }
 
 class _ProductListState extends State<ProductList> {
-  final ref = FirebaseDatabase.instance.ref('product');
+  final ref = db.FirebaseDatabase.instance.ref('product');
   final cartDatabase = FirebaseFirestore.instance.collection('cart');
 
-  //cart_firestore
-  // List<int> qtyList = [];
-  List<QueryDocumentSnapshot<Map<String, dynamic>>> card = [];
-  int qty = 0;
-  int total = 0;
-  String id = '';
-  //get docID
-  Future getDocId() async {
-    await FirebaseFirestore.instance.collection('cart').get().then((value) {
-      card = value.docs;
-    });
-  }
-
-  List<String> docCartID = [];
-// Future getCartDocId() async {
-//     await FirebaseFirestore.instance.collection('cart').get().then((value) => value.docs.forEach((document) {
-//               print({document.reference});
-//             id =  document.reference.id;
-//             }));
-//   }
-
-  //String? documentId = null;
   FirebaseFirestore firestore = FirebaseFirestore.instance;
-
-  @override
-  void initState() {
-    getDocId();
-    //getCartDocId();
-    setState(() {});
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -63,25 +35,23 @@ class _ProductListState extends State<ProductList> {
           Column(
             children: [
               Expanded(
-                child: FirebaseAnimatedList(
-                    query: ref,
-                    defaultChild: const Text('Loading'),
-                    itemBuilder: (context, snapshot, animation, index) {
-                      // print("list : $qtyList");
-                      return Padding(
-                        padding: const EdgeInsets.only(left: 14.0, right: 14.0),
-                        child: ProductCard(
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 48),
+                  child: FirebaseAnimatedList(
+                      query: ref,
+                      shrinkWrap: true,
+                      defaultChild: const Text('Loading'),
+                      itemBuilder: (context, snapshot, animation, index) {
+                        return Padding(
+                          padding:
+                              const EdgeInsets.only(left: 14.0, right: 14.0),
+                          child: ProductCard(
+                            wId: widget.wId,
                             snapshot: snapshot,
-                            qtyListData: card[index]['qty'],
-                            // docCartID:"5" ,
-                            addProductQty: () {
-                              cartDatabase.doc("card[index]");
-                              // ref1.docs[] .update({'qty':widget.qtyListData});
-                            },
-                            addRemoveProduct:
-                                (qty, pid, total, isAddRemove) async {}),
-                      );
-                    }),
+                          ),
+                        );
+                      }),
+                ),
               )
             ],
           ),
@@ -109,7 +79,7 @@ class _ProductListState extends State<ProductList> {
                     Text(
                       "Buy the list",
                       style:
-                          getBoldStyle(color: ColorManager.white, fontSize: 18),
+                          getBoldStyle(color: ColorManager.white, fontSize: 16),
                     ),
                   ],
                 ),
@@ -119,7 +89,8 @@ class _ProductListState extends State<ProductList> {
           Positioned(
             //top: 100,
             bottom: 6,
-            left: MediaQuery.of(context).size.width * 0.3,
+
+            left: MediaQuery.of(context).size.width * 0.354,
 
             child: Container(
               width: MediaQuery.of(context).size.width * 0.3,
@@ -151,11 +122,20 @@ class _ProductListState extends State<ProductList> {
                           style: getMediumStyle(
                               color: ColorManager.darkGrey, fontSize: 10),
                         ),
-                        Text(
-                          '₹330',
-                          style: getBoldStyle(
-                              color: ColorManager.primary, fontSize: 14),
-                        ),
+                        StreamBuilder(
+                          stream: FirebaseFirestore.instance
+                              .collection("wishlist")
+                              .doc(widget.wId)
+                              .snapshots(),
+                          builder: (context, snapshot) {
+                            if (snapshot.hasData) {
+                              var data = snapshot.data?.get("total");
+                              return Text(data.toString());
+                            } else {
+                              return const Text("0");
+                            }
+                          },
+                        )
                       ],
                     ),
                   ),
@@ -172,30 +152,93 @@ class _ProductListState extends State<ProductList> {
     return AppBar(
       foregroundColor: ColorManager.secondary,
       backgroundColor: ColorManager.white,
-      title: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        //crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Text(
-                widget.tittle,
-                style: getBoldStyle(
-                    fontSize: FontSize.s20, color: ColorManager.secondary),
-              ),
-            ],
-          ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Icon(Icons.search, color: ColorManager.secondary),
-              SizedBox(width: 18),
-              Icon(Icons.qr_code_scanner_sharp, color: ColorManager.secondary),
-            ],
-          ),
-        ],
+      title: Text(
+        widget.tittle,
+        style:
+            getBoldStyle(fontSize: FontSize.s20, color: ColorManager.secondary),
       ),
+      actions: <Widget>[
+        Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            InkWell(
+                onTap: () {
+                  showSearch(
+                      context: context,
+                      delegate: DataSearch(widget.wId, widget.tittle));
+                },
+                child: Icon(Icons.search, color: ColorManager.secondary)),
+            const SizedBox(width: 18),
+            Padding(
+              padding: const EdgeInsets.only(right: 18.0),
+              child: Icon(Icons.qr_code_scanner_sharp,
+                  color: ColorManager.secondary),
+            ),
+          ],
+        ),
+      ],
     );
+  }
+}
+
+class DataSearch extends SearchDelegate<String> {
+  String wId;
+  String tittle;
+  DataSearch(this.wId, this.tittle);
+  @override
+  List<Widget>? buildActions(BuildContext context) {
+    return [
+      IconButton(
+          onPressed: (() {
+            query = "";
+          }),
+          icon: Icon(Icons.clear))
+    ];
+  }
+
+  @override
+  Widget? buildLeading(BuildContext context) {
+    return IconButton(
+        icon: AnimatedIcon(
+            icon: AnimatedIcons.menu_arrow, progress: transitionAnimation),
+        onPressed: (() {
+          Navigator.of(context).push(MaterialPageRoute(
+            builder: (context) => ProductList(
+              wId: wId,
+              tittle: tittle,
+            ),
+          ));
+        }));
+  }
+
+  @override
+  Widget buildResults(BuildContext context) {
+    return FirebaseAnimatedList(
+        query: getStrem(query),
+        shrinkWrap: true,
+        defaultChild: const Text('Loading'),
+        itemBuilder: (context, snapshot, animation, index) {
+          return ProductCard(wId: wId, snapshot: snapshot);
+        });
+  }
+
+  @override
+  Widget buildSuggestions(BuildContext contexts) {
+    return FirebaseAnimatedList(
+        query: getStrem(query),
+        shrinkWrap: true,
+        defaultChild: const Text('Loading'),
+        itemBuilder: (contexts, snapshot, animation, index) {
+          return ProductCard(wId: wId, snapshot: snapshot);
+        });
+  }
+
+  db.Query getStrem(String query) {
+    var z = db.FirebaseDatabase.instance
+        .ref("product")
+        .orderByChild("pname")
+        .equalTo(query);
+
+    return z;
   }
 }
