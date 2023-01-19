@@ -55,9 +55,18 @@ class StringManager {
   static const String successfullyEmailSent =
       'Successfully reset password link sent to your email';
 
-  //list page
+  //wishlist page
   static const String itemAdded = 'Successfully item Added';
   static const String listPagebar = 'Your Shopping Lists';
   static const String loading = 'Loading...';
   static const String newList = 'New List';
+
+  //productlist page
+  static const String buyList = 'Buy the list';
+  static const String total = 'Totals';
+
+  //productcard page
+  static const String discount = '10% Discount';
+  static const String gram = '(500g - ₹20)';
+  static const String kg = '1x kg';
 }

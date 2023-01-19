@@ -42,58 +42,56 @@ class _MyListsState extends State<MyLists> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        appBar: AppBar(
-          backgroundColor: ColorManager.white,
-          title: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Icon(Icons.arrow_back, color: ColorManager.secondary),
-                  const SizedBox(width: 10),
-                  Text(
-                    StringManager.listPagebar,
-                    style: getBoldStyle(
-                        fontSize: FontSize.s18, color: ColorManager.secondary),
-                  ),
-                ],
-              ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Icon(Icons.search, color: ColorManager.secondary),
-                  const SizedBox(width: 18),
-                  Icon(Icons.qr_code_scanner_sharp,
-                      color: ColorManager.secondary),
-                ],
-              ),
-            ],
-          ),
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: ColorManager.white,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                Icon(Icons.arrow_back, color: ColorManager.secondary),
+                const SizedBox(width: 10),
+                Text(
+                  StringManager.listPagebar,
+                  style: getBoldStyle(
+                      fontSize: FontSize.s18, color: ColorManager.secondary),
+                ),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Icon(Icons.search, color: ColorManager.secondary),
+                const SizedBox(width: 18),
+                Icon(Icons.qr_code_scanner_sharp,
+                    color: ColorManager.secondary),
+              ],
+            ),
+          ],
         ),
-        body: Center(
-          child: Stack(
-            alignment: Alignment.center,
-            children: [
-              StreamBuilder<QuerySnapshot>(
+      ),
+      body: Center(
+        child: Stack(
+          alignment: Alignment.center,
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(top: 10.0),
+              child: StreamBuilder<QuerySnapshot>(
                 stream: FirebaseFirestore.instance
                     .collection('wishlist')
                     .where("uid",
                         isEqualTo: FirebaseAuth.instance.currentUser?.uid)
                     .snapshots(),
-
-                //lists.doc(documentId).get(),
                 builder: (context, snapshot) {
-                  //print("qty = ${FirebaseFirestore.instance.collection('cart').snapshots()}");
                   if (snapshot.hasData) {
                     return ListView.builder(
                         itemCount: snapshot.data?.docs.length,
                         itemBuilder: (context, index) {
                           QueryDocumentSnapshot<Object?> documentSnapshot =
                               snapshot.data!.docs.elementAt(index);
-                          //print(snapshot.data?.docs[index]['name'] ?? '');
+
                           return Padding(
                               padding:
                                   const EdgeInsets.only(left: 20.0, right: 20),
@@ -178,63 +176,72 @@ class _MyListsState extends State<MyLists> {
                   return const Text(StringManager.loading);
                 },
               ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(left: 30, right: 30),
-                    child: Container(
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(30)),
-                      width: MediaQuery.of(context).size.width,
-                      //color: Colors.white,
-                      child: TextFormField(
-                        controller: _listNameController,
-                        decoration: InputDecoration(
-                            suffixIcon: Padding(
-                              padding: const EdgeInsets.only(right: 10.0),
-                              child: Container(
-                                  decoration: BoxDecoration(
-                                    color: ColorManager.primary,
-                                    shape: BoxShape.circle,
-                                  ),
-                                  child: InkWell(
-                                      onTap: () {
-                                        _listNameController.text.isEmpty
-                                            ? null
-                                            : addList();
-                                        _listNameController.clear();
-                                      },
-                                      child: Icon(
-                                        Icons.add,
-                                        color: ColorManager.white,
-                                      ))),
-                            ),
-                            hintText: StringManager.newList,
-                            focusColor: ColorManager.primary,
-                            enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                    width: 2, color: ColorManager.primary),
-                                borderRadius: BorderRadius.circular(30)),
-                            focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                    width: 2, color: ColorManager.primary),
-                                borderRadius: BorderRadius.circular(30)),
-                            border: OutlineInputBorder(
+            ),
+            Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 30, right: 30),
+                  child: Container(
+                  
+                    decoration: BoxDecoration(
+                        color: ColorManager.lightgreen,
+                        borderRadius: BorderRadius.circular(30)),
+                    width: MediaQuery.of(context).size.width,
+                    //color: Colors.white,
+                    child: TextFormField(
+                     
+                      //textAlign: TextAlign.center,
+
+                      controller: _listNameController,
+                      decoration: InputDecoration(
+                      contentPadding: EdgeInsets.only(left: 10),
+                      
+                          suffixIcon: Padding(
+                            padding: const EdgeInsets.only(right: 10.0),
+                            child: Container(
+                                decoration: BoxDecoration(
+                                  color: ColorManager.primary,
+                                  shape: BoxShape.circle,
+                                ),
+                                child: InkWell(
+                                    onTap: () {
+                                      _listNameController.text.isEmpty
+                                          ? null
+                                          : addList();
+                                      _listNameController.clear();
+                                    },
+                                    child: Icon(
+                                      Icons.add,
+                                      color: ColorManager.white,
+                                    ))),
+                          ),
+                          
+                          hintText: StringManager.newList,
+
+                          hintStyle: TextStyle(color: ColorManager.primary,fontWeight: FontWeight.w600,),
+                          focusColor: ColorManager.primary,
+                          enabledBorder: OutlineInputBorder(
                               borderSide: BorderSide(
-                                width: 2,
-                                color: ColorManager.primary,
-                              ),
-                              borderRadius: BorderRadius.circular(30),
-                            )),
-                      ),
+                                  width: 2, color: ColorManager.primary),
+                              borderRadius: BorderRadius.circular(30)),
+                          focusedBorder: OutlineInputBorder(
+                              borderSide: BorderSide(
+                                  width: 2, color: ColorManager.primary),
+                              borderRadius: BorderRadius.circular(30)),
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide(
+                              width: 2,
+                              color: ColorManager.primary,
+                            ),
+                            borderRadius: BorderRadius.circular(30),
+                          )),
                     ),
-                  )
-                ],
-              ),
-            ],
-          ),
+                  ),
+                )
+              ],
+            ),
+          ],
         ),
       ),
     );

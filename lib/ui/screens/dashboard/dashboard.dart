@@ -74,12 +74,9 @@ class _DashboardState extends State<Dashboard> {
               currentIndx = index;
             });
           },
-    
-          //type: BottomNavigationBarType.fixed,
           items: const [
             BottomNavigationBarItem(icon: Icon(Icons.home), label: StringManager.home),
             BottomNavigationBarItem(icon: Icon(Icons.person), label: StringManager.vendors),
-            // ignore: prefer_const_literals_to_create_immutables
             BottomNavigationBarItem(icon: Icon(Icons.list), label: StringManager.lists),
             BottomNavigationBarItem(icon: Icon(Icons.category), label: StringManager.categories),
             BottomNavigationBarItem(icon: Icon(Icons.more), label: StringManager.more),

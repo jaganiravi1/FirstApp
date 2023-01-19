@@ -1,5 +1,6 @@
 import 'package:application/resources/assets_manager.dart';
 import 'package:application/resources/color_manager.dart';
+import 'package:application/resources/string_manager.dart';
 import 'package:application/resources/styles_manager.dart';
 import 'package:application/services/database.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -8,13 +9,13 @@ import 'package:flutter/material.dart';
 
 class ProductCard extends StatefulWidget {
   DataSnapshot snapshot;
-  String? docCartID;
+  
   String wId;
   ProductCard({
     Key? key,
     required this.wId,
     required this.snapshot,
-    this.docCartID,
+    
   }) : super(key: key);
 
   @override
@@ -24,7 +25,7 @@ class ProductCard extends StatefulWidget {
 class _ProductCardState extends State<ProductCard> {
   int qty = 0;
   int total = 0;
-  addRemoveProduct() {}
+
 
   getQuantity() async {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -63,7 +64,7 @@ class _ProductCardState extends State<ProductCard> {
       child: SizedBox(
         height: MediaQuery.of(context).size.height * 0.25,
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Stack(
               children: [
@@ -96,7 +97,7 @@ class _ProductCardState extends State<ProductCard> {
                       alignment: Alignment.centerLeft,
                       child: Padding(
                         padding: const EdgeInsets.only(left: 4.0),
-                        child: Text('10% Discount',
+                        child: Text(StringManager.discount,
                             style: getLightStyle(
                                 color: ColorManager.white, fontSize: 12)),
                       )),
@@ -129,124 +130,128 @@ class _ProductCardState extends State<ProductCard> {
               ],
             ),
             //SizedBox(width: 5),
-            Container(
-              width: MediaQuery.of(context).size.width * 0.52,
-              //color: Colors.blueAccent,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 12),
-                  SizedBox(
-                    width: 70,
-                    height: 20,
-                    child: Image.asset(ImageAssets.tesco, fit: BoxFit.fill),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(widget.snapshot.child('pname').value.toString(),
-                      style: getSemiBoldStyle(
-                          color: ColorManager.secondary, fontSize: 16)),
-                  const SizedBox(height: 4),
-                  Row(
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal:  8.0),
+                child: Container(
+                  //color: Colors.lightBlue,
+                  width: MediaQuery.of(context).size.width,
+                  //color: Colors.blueAccent,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Text('(500 g - ₹20)',
-                          textAlign: TextAlign.left,
-                          style: getMediumStyle(
-                              color: ColorManager.lightGrey, fontSize: 14)),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 58.0),
-                        child: Column(
-                          children: [
-                            Text('1x kg',
-                                style: getMediumStyle(
-                                    color: ColorManager.darkGrey,
-                                    fontSize: 14)),
-                            Text(
-                              "₹${widget.snapshot.child('prize').value.toString()}",
-                              style: getBoldStyle(
-                                  color: ColorManager.primary, fontSize: 22),
-                            ),
-                          ],
+                      const SizedBox(height: 12),
+                      SizedBox(
+                        width: 70,
+                        height: 20,
+                        child: Image.asset(ImageAssets.tesco, fit: BoxFit.fill),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(widget.snapshot.child('pname').value.toString(),
+                          style: getSemiBoldStyle(
+                              color: ColorManager.secondary, fontSize: 16)),
+                      const SizedBox(height: 4),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(StringManager.gram,
+                              textAlign: TextAlign.left,
+                              style: getMediumStyle(
+                                  color: ColorManager.lightGrey, fontSize: 14)),
+                          Column(
+                            children: [
+                              Text(StringManager.kg,
+                                  style: getMediumStyle(
+                                      color: ColorManager.darkGrey,
+                                      fontSize: 14)),
+                              Text(
+                                "₹${widget.snapshot.child('prize').value.toString()}",
+                                style: getBoldStyle(
+                                    color: ColorManager.primary, fontSize: 22),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 4),
+                      Expanded(
+                        child: Text(
+                          widget.snapshot.child('desc').value.toString(),
+                          style:
+                              TextStyle(color: ColorManager.darkred, fontSize: 15),
                         ),
                       ),
-                    ],
-                  ),
-                  const SizedBox(height: 4),
-                  Expanded(
-                    child: Text(
-                      widget.snapshot.child('desc').value.toString(),
-                      style:
-                          TextStyle(color: ColorManager.darkred, fontSize: 15),
-                    ),
-                  ),
-                  //
-                  Align(
-                    alignment: Alignment.bottomRight,
-                    child: Padding(
-                      padding: const EdgeInsets.only(bottom: 8.0, right: 8),
-                      child: Container(
-                        width: 100,
-                        height: 30,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(16),
-                            color: ColorManager.lightgreen),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            InkWell(
-                              onTap: () {
-                                setState(() {
-                                  if (qty >= 1) {
-                                    qty -= 1;
-                                    var prize =
-                                        widget.snapshot.child("prize").value;
-                                    total = (prize as int) * qty;
+                      //
+                      Align(
+                        alignment: Alignment.bottomRight,
+                        child: Padding(
+                          padding: const EdgeInsets.only(bottom: 8.0, right: 8),
+                          child: Container(
+                            width: 100,
+                            height: 30,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(16),
+                                color: ColorManager.lightgreen),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                InkWell(
+                                  onTap: () {
+                                    setState(() {
+                                      if (qty >= 1) {
+                                        qty -= 1;
+                                        var prize =
+                                            widget.snapshot.child("prize").value;
+                                        total = (prize as int) * qty;
+                                        FirebaseDb.getCreateCart(
+                                            widget.snapshot.child("pid").value,
+                                            widget.wId,
+                                            qty,
+                                            total);
+                                        FirebaseDb.getWishListTotalRemove(
+                                            widget.wId,
+                                            widget.snapshot.child("prize").value);
+                                      }
+                                    });
+                                  },
+                                  child: Icon(
+                                    Icons.remove_circle_outline,
+                                    color: ColorManager.primary,
+                                  ),
+                                ),
+                                //Text(widget.qtyListData.toString()),
+                                Text("${qty}"),
+            
+                                InkWell(
+                                  onTap: () async {
+                                    setState(() {
+                                      qty += 1;
+                                      var prize =
+                                          widget.snapshot.child("prize").value;
+                                      total = (prize as int) * qty;
+                                    });
                                     FirebaseDb.getCreateCart(
                                         widget.snapshot.child("pid").value,
                                         widget.wId,
                                         qty,
                                         total);
-                                    FirebaseDb.getWishListTotalRemove(
-                                        widget.wId,
+                                    FirebaseDb.getWishListTotalAdd(widget.wId,
                                         widget.snapshot.child("prize").value);
-                                  }
-                                });
-                              },
-                              child: Icon(
-                                Icons.remove_circle_outline,
-                                color: ColorManager.primary,
-                              ),
+                                  },
+                                  child: Icon(
+                                    Icons.add_circle_outline,
+                                    color: ColorManager.primary,
+                                  ),
+                                ),
+                              ],
                             ),
-                            //Text(widget.qtyListData.toString()),
-                            Text("${qty}"),
-
-                            InkWell(
-                              onTap: () async {
-                                setState(() {
-                                  qty += 1;
-                                  var prize =
-                                      widget.snapshot.child("prize").value;
-                                  total = (prize as int) * qty;
-                                });
-                                FirebaseDb.getCreateCart(
-                                    widget.snapshot.child("pid").value,
-                                    widget.wId,
-                                    qty,
-                                    total);
-                                FirebaseDb.getWishListTotalAdd(widget.wId,
-                                    widget.snapshot.child("prize").value);
-                              },
-                              child: Icon(
-                                Icons.add_circle_outline,
-                                color: ColorManager.primary,
-                              ),
-                            ),
-                          ],
+                          ),
                         ),
-                      ),
-                    ),
-                  )
-                ],
+                      )
+                    ],
+                  ),
+                ),
               ),
             ),
           ],

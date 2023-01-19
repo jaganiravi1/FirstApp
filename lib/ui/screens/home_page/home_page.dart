@@ -2,13 +2,9 @@ import 'package:application/Authntication/auth.dart';
 import 'package:application/resources/color_manager.dart';
 import 'package:application/resources/string_manager.dart';
 import 'package:application/ui/dialogs/dialog_box.dart';
-import 'package:application/ui/screens/login_page/login_page.dart';
-import 'package:application/user_preferences/user_preferences.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
-
 
 class DrawerPage extends StatefulWidget {
   const DrawerPage({super.key});
@@ -19,11 +15,9 @@ class DrawerPage extends StatefulWidget {
 
 class _DrawerPageState extends State<DrawerPage> {
   String? email, userName;
-  
-   final AuthService _authService = AuthService();
-   
+  final AuthService _authService = AuthService();
   User? _user;
-  
+
   @override
   void initState() {
     _user = _authService.getUser();
@@ -31,26 +25,23 @@ class _DrawerPageState extends State<DrawerPage> {
       email = _user?.email;
       userName = _user?.displayName;
     });
-    
+
     super.initState();
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        
-       backgroundColor: ColorManager.primary, 
+        backgroundColor: ColorManager.primary,
       ),
       drawer: Drawer(
-        
-        
         child: ListView(
           children: [
             UserAccountsDrawerHeader(
               decoration: BoxDecoration(color: ColorManager.primary),
               currentAccountPicture: CircleAvatar(
-                backgroundColor: Colors.white,
+                backgroundColor: ColorManager.white,
                 child: Icon(
                   Icons.person,
                   color: ColorManager.primary,
@@ -66,8 +57,8 @@ class _DrawerPageState extends State<DrawerPage> {
             ListTile(
               leading: Padding(
                 padding: const EdgeInsets.only(left: 16.0),
-                child: Icon(Icons.payment_outlined,
-                    color: ColorManager.secondary),
+                child:
+                    Icon(Icons.payment_outlined, color: ColorManager.secondary),
               ),
               title: Text(
                 StringManager.payment,
@@ -84,8 +75,7 @@ class _DrawerPageState extends State<DrawerPage> {
             ListTile(
               leading: Padding(
                 padding: const EdgeInsets.only(left: 16.0),
-                child: Icon(Icons.location_city,
-                    color: ColorManager.secondary),
+                child: Icon(Icons.location_city, color: ColorManager.secondary),
               ),
               title: Text(
                 StringManager.address,
@@ -102,8 +92,7 @@ class _DrawerPageState extends State<DrawerPage> {
             ListTile(
               leading: Padding(
                 padding: const EdgeInsets.only(left: 16.0),
-                child: Icon(Icons.privacy_tip,
-                    color: ColorManager.secondary),
+                child: Icon(Icons.privacy_tip, color: ColorManager.secondary),
               ),
               title: Text(
                 StringManager.password,
@@ -120,8 +109,7 @@ class _DrawerPageState extends State<DrawerPage> {
             ListTile(
               leading: Padding(
                 padding: const EdgeInsets.only(left: 16.0),
-                child: Icon(Icons.more,
-                    color: ColorManager.secondary),
+                child: Icon(Icons.more, color: ColorManager.secondary),
               ),
               title: Text(
                 StringManager.other,
@@ -138,8 +126,7 @@ class _DrawerPageState extends State<DrawerPage> {
             ListTile(
               leading: Padding(
                 padding: const EdgeInsets.only(left: 16.0),
-                child: Icon(Icons.logout,
-                    color: ColorManager.secondary),
+                child: Icon(Icons.logout, color: ColorManager.secondary),
               ),
               title: Text(
                 StringManager.signOut,
@@ -147,10 +134,10 @@ class _DrawerPageState extends State<DrawerPage> {
               ),
               onTap: () {
                 showDialog(
-                    context: context,
-                    builder: ((context) => AlertDialogBox.signoutAleartDialog(context)
-                        ),
-                        );
+                  context: context,
+                  builder: ((context) =>
+                      AlertDialogBox.signoutAleartDialog(context)),
+                );
               },
             ),
           ],

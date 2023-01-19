@@ -1,3 +1,4 @@
+import 'package:application/resources/color_manager.dart';
 import 'package:application/user_preferences/user_preferences.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +10,7 @@ class AlertDialogBox {
   static signoutAleartDialog(BuildContext context) {
     return AlertDialog(
       title: const Text(
-        StringManager.exitDialog,
+        StringManager.singoutDialog,
         style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
       ),
       actions: [
@@ -17,12 +18,11 @@ class AlertDialogBox {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ElevatedButton(
-              style: const ButtonStyle(
-                  backgroundColor: MaterialStatePropertyAll(Colors.red)),
+              style: ButtonStyle(
+                  backgroundColor: MaterialStatePropertyAll(ColorManager.darkred)),
               onPressed: () async {
                 FirebaseAuth.instance.signOut();
                 await UserPreferences.clearDetailsOnSignOut();
-                print("after signout:${await UserPreferences.getUserEmail()}");
                 
 
                 // ignore: use_build_context_synchronously
@@ -31,27 +31,28 @@ class AlertDialogBox {
                     MaterialPageRoute(builder: (context) => const LoginPage()),
                     (route) => false);
               },
-              child: const Text(
+              child:Text(
                 StringManager.yes,
                 style:
-                    TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                    TextStyle(color: ColorManager.white, fontWeight: FontWeight.bold),
               ),
             ),
             const SizedBox(width: 8),
             ElevatedButton(
-              style: const ButtonStyle(
-                  elevation: MaterialStatePropertyAll(0),
+              style:  ButtonStyle(
+                  elevation: const MaterialStatePropertyAll(0),
                   side: MaterialStatePropertyAll(BorderSide(
-                    color: Colors.redAccent,
+
+                    color: ColorManager.darkred
                   )),
                   backgroundColor:
-                      MaterialStatePropertyAll(Colors.transparent)),
+                      const MaterialStatePropertyAll(Colors.transparent)),
               onPressed: () {
                 Navigator.pop(context);
               },
-              child: const Text(
+              child: Text(
                 StringManager.no,
-                style: TextStyle(color: Colors.red),
+                style: TextStyle(color: ColorManager.darkred),
               ),
             )
           ],
@@ -62,8 +63,8 @@ class AlertDialogBox {
 
   static exitAppAleartDialog(BuildContext context) {
     return AlertDialog(
-      title: Center(
-        child: const Text(
+      title: const Center(
+        child: Text(
           StringManager.exitDialog,
           style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
         ),
@@ -73,32 +74,32 @@ class AlertDialogBox {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             ElevatedButton(
-              style: const ButtonStyle(
-                  backgroundColor: MaterialStatePropertyAll(Colors.red)),
+              style: ButtonStyle(
+                  backgroundColor: MaterialStatePropertyAll(ColorManager.darkred)),
               onPressed: () {
                 Navigator.of(context).pop(true);
               },
-              child: const Text(
+              child: Text(
                 StringManager.yes,
                 style:
-                    TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                    TextStyle(color: ColorManager.white, fontWeight: FontWeight.bold),
               ),
             ),
             const SizedBox(width: 8),
             ElevatedButton(
-              style: const ButtonStyle(
+              style: ButtonStyle(
                   elevation: MaterialStatePropertyAll(0),
                   side: MaterialStatePropertyAll(BorderSide(
-                    color: Colors.redAccent,
+                    color: ColorManager.darkred,
                   )),
                   backgroundColor:
                       MaterialStatePropertyAll(Colors.transparent)),
               onPressed: () {
                 Navigator.pop(context);
               },
-              child: const Text(
+              child:Text(
                 StringManager.no,
-                style: TextStyle(color: Colors.red),
+                style: TextStyle(color: ColorManager.darkred),
               ),
             )
           ],
