@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:application/resources/assets_manager.dart';
 import 'package:application/resources/color_manager.dart';
 import 'package:application/resources/fonts_manager.dart';
@@ -12,8 +11,8 @@ import 'package:flutter/material.dart';
 import 'product_card.dart';
 import 'search_bar.dart';
 
-// ignore: must_be_immutable
 class ProductList extends StatefulWidget {
+  static String id = 'productList';
   final String tittle;
   String wId;
   ProductList({super.key, required this.wId, required this.tittle});
@@ -37,26 +36,30 @@ class _ProductListState extends State<ProductList> {
           Column(
             children: [
               Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom:48.0),
-                  child: FirebaseAnimatedList(
-                      query: ref,
-                      shrinkWrap: true,
-                      defaultChild: Center(child: CircularProgressIndicator(color: ColorManager.primary,strokeWidth: 5,)),
-                      itemBuilder: (context, snapshot, animation, index) {
-                  
-                        return Padding(
-                          padding:
-                              const EdgeInsets.only(left: 14.0, right: 14.0),
-                          child: ProductCard(
-                            wId: widget.wId,
-                            snapshot: snapshot,
-                          ),
-                        );
-                      }),
-                ),
+                child: FirebaseAnimatedList(
+                    query: ref,
+                    shrinkWrap: true,
+                    defaultChild: Center(
+                        child: CircularProgressIndicator(
+                      color: ColorManager.primary,
+                      strokeWidth: 5,
+                    )),
+                    itemBuilder: (context, snapshot, animation, index) {
+                      print("length:${snapshot.children.length}");
+                      return Padding(
+                        padding: EdgeInsets.only(
+                            left: 14.0,
+                            right: 14.0,
+                            bottom: (index == snapshot.children.length - 2)
+                                ? 50
+                                : 0),
+                        child: ProductCard(
+                          wId: widget.wId,
+                          snapshot: snapshot,
+                        ),
+                      );
+                    }),
               ),
-              
             ],
           ),
           Positioned(
@@ -144,7 +147,6 @@ class _ProductListState extends State<ProductList> {
               ),
             ),
           ),
-          
         ],
       ),
     );

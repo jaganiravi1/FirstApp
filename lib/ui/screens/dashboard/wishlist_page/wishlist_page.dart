@@ -1,5 +1,4 @@
 import 'package:application/resources/string_manager.dart';
-import 'package:application/ui/screens/product_page/products_list.dart';
 import 'package:application/resources/color_manager.dart';
 import 'package:application/resources/fonts_manager.dart';
 import 'package:application/resources/styles_manager.dart';
@@ -7,7 +6,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import '../product_page/products_list.dart';
+
 class MyLists extends StatefulWidget {
+  static String id = 'wishList';
   const MyLists({super.key});
 
   @override
@@ -183,20 +185,14 @@ class _MyListsState extends State<MyLists> {
                 Padding(
                   padding: const EdgeInsets.only(left: 30, right: 30),
                   child: Container(
-                  
                     decoration: BoxDecoration(
                         color: ColorManager.lightgreen,
                         borderRadius: BorderRadius.circular(30)),
                     width: MediaQuery.of(context).size.width,
-                    //color: Colors.white,
                     child: TextFormField(
-                     
-                      //textAlign: TextAlign.center,
-
                       controller: _listNameController,
                       decoration: InputDecoration(
-                      contentPadding: EdgeInsets.only(left: 10),
-                      
+                          contentPadding: EdgeInsets.only(left: 10),
                           suffixIcon: Padding(
                             padding: const EdgeInsets.only(right: 10.0),
                             child: Container(
@@ -216,10 +212,11 @@ class _MyListsState extends State<MyLists> {
                                       color: ColorManager.white,
                                     ))),
                           ),
-                          
                           hintText: StringManager.newList,
-
-                          hintStyle: TextStyle(color: ColorManager.primary,fontWeight: FontWeight.w600,),
+                          hintStyle: TextStyle(
+                            color: ColorManager.primary,
+                            fontWeight: FontWeight.w600,
+                          ),
                           focusColor: ColorManager.primary,
                           enabledBorder: OutlineInputBorder(
                               borderSide: BorderSide(

@@ -88,12 +88,12 @@ class AlertDialogBox {
             const SizedBox(width: 8),
             ElevatedButton(
               style: ButtonStyle(
-                  elevation: MaterialStatePropertyAll(0),
+                  elevation: const MaterialStatePropertyAll(0),
                   side: MaterialStatePropertyAll(BorderSide(
                     color: ColorManager.darkred,
                   )),
                   backgroundColor:
-                      MaterialStatePropertyAll(Colors.transparent)),
+                      const MaterialStatePropertyAll(Colors.transparent)),
               onPressed: () {
                 Navigator.pop(context);
               },

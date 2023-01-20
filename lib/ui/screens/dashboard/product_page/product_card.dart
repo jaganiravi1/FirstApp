@@ -8,14 +8,14 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
 class ProductCard extends StatefulWidget {
+   static String id = 'productCard';
   DataSnapshot snapshot;
-  
+
   String wId;
   ProductCard({
     Key? key,
     required this.wId,
     required this.snapshot,
-    
   }) : super(key: key);
 
   @override
@@ -25,7 +25,6 @@ class ProductCard extends StatefulWidget {
 class _ProductCardState extends State<ProductCard> {
   int qty = 0;
   int total = 0;
-
 
   getQuantity() async {
     FirebaseFirestore firestore = FirebaseFirestore.instance;
@@ -132,7 +131,7 @@ class _ProductCardState extends State<ProductCard> {
             //SizedBox(width: 5),
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal:  8.0),
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
                 child: Container(
                   //color: Colors.lightBlue,
                   width: MediaQuery.of(context).size.width,
@@ -178,8 +177,8 @@ class _ProductCardState extends State<ProductCard> {
                       Expanded(
                         child: Text(
                           widget.snapshot.child('desc').value.toString(),
-                          style:
-                              TextStyle(color: ColorManager.darkred, fontSize: 15),
+                          style: TextStyle(
+                              color: ColorManager.darkred, fontSize: 15),
                         ),
                       ),
                       //
@@ -201,8 +200,9 @@ class _ProductCardState extends State<ProductCard> {
                                     setState(() {
                                       if (qty >= 1) {
                                         qty -= 1;
-                                        var prize =
-                                            widget.snapshot.child("prize").value;
+                                        var prize = widget.snapshot
+                                            .child("prize")
+                                            .value;
                                         total = (prize as int) * qty;
                                         FirebaseDb.getCreateCart(
                                             widget.snapshot.child("pid").value,
@@ -211,7 +211,9 @@ class _ProductCardState extends State<ProductCard> {
                                             total);
                                         FirebaseDb.getWishListTotalRemove(
                                             widget.wId,
-                                            widget.snapshot.child("prize").value);
+                                            widget.snapshot
+                                                .child("prize")
+                                                .value);
                                       }
                                     });
                                   },
@@ -222,7 +224,7 @@ class _ProductCardState extends State<ProductCard> {
                                 ),
                                 //Text(widget.qtyListData.toString()),
                                 Text("${qty}"),
-            
+
                                 InkWell(
                                   onTap: () async {
                                     setState(() {

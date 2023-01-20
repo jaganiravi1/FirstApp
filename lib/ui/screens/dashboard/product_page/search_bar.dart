@@ -1,10 +1,11 @@
 
-import 'package:application/ui/screens/product_page/product_card.dart';
+import 'package:application/ui/screens/dashboard/product_page/product_card.dart';
 import 'package:firebase_database/firebase_database.dart' as db;
 import 'package:firebase_database/ui/firebase_animated_list.dart';
 import 'package:flutter/material.dart';
 
 class DataSearch extends SearchDelegate<String> {
+   static String id = 'SearchBar';
   String wId;
   String tittle;
   DataSearch(this.wId, this.tittle);
@@ -15,7 +16,7 @@ class DataSearch extends SearchDelegate<String> {
           onPressed: (() {
             query = "";
           }),
-          icon: Icon(Icons.clear))
+          icon: const Icon(Icons.clear))
     ];
   }
 
@@ -42,7 +43,8 @@ class DataSearch extends SearchDelegate<String> {
 
   @override
   Widget buildSuggestions(BuildContext contexts) {
-    return Text(" ");}
+    return Text(" ");
+  }
   //   return FirebaseAnimatedList(
   //       query: getStrem(query),
   //       shrinkWrap: true,

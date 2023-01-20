@@ -1,18 +1,20 @@
-// ignore_for_file: prefer_final_fields
-
 import 'package:application/Authntication/auth.dart';
 import 'package:application/resources/assets_manager.dart';
+import 'package:application/resources/styles_manager.dart';
 import 'package:application/ui/screens/dashboard/dashboard.dart';
 import 'package:application/ui/screens/resetpass_page/resetpass_page.dart';
 import 'package:application/ui/screens/signup_page/signup_page.dart';
-import 'package:application/ui/utilites/border_dec.dart';
+import 'package:application/ui/utilites/common_utilities.dart';
 import 'package:application/resources/color_manager.dart';
 import 'package:application/resources/string_manager.dart';
+import 'package:application/ui/utilites/button_theme.dart';
+import 'package:application/ui/validator/validation.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class LoginPage extends StatefulWidget {
+  static String id = 'login';
   const LoginPage({Key? key}) : super(key: key);
 
   @override
@@ -43,24 +45,18 @@ class _LoginPageState extends State<LoginPage> {
               Center(
                 child: Padding(
                   padding: const EdgeInsets.only(top: 200),
-                  child: Text(
-                    StringManager.loginText,
-                    style: TextStyle(
-                        color: ColorManager.primary,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 30),
-                  ),
+                  child: Text(StringManager.loginText,
+                      style: getBoldStyle(
+                          color: ColorManager.primary, fontSize: 30)),
                 ),
               ),
               const SizedBox(height: 7),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text(StringManager.loginSubtitle,
-                      style: TextStyle(
-                          color: Colors.black54,
-                          fontWeight: FontWeight.w500,
-                          fontSize: 14)),
+                  Text(StringManager.loginSubtitle,
+                      style: getRegularStyle(
+                          color: ColorManager.lightGrey, fontSize: 16)),
                   const SizedBox(width: 4),
                   SizedBox(
                       width: 18,
@@ -71,61 +67,32 @@ class _LoginPageState extends State<LoginPage> {
               const SizedBox(
                 height: 50,
               ),
-
               Padding(
                 padding: const EdgeInsets.only(left: 30, right: 30),
-                child: TextFormField(
-                    controller: _emailcontroller,
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                    cursorColor: ColorManager.secondary,
-                    decoration: CommonUtilites.getInputDec(
-                        StringManager.loginText,
-                        Icons.email,
-                        StringManager.loginText),
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return StringManager.required;
-                      }
-                      if (!RegExp(
-                              r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-                          .hasMatch(value)) {
-                        return StringManager.validEmail;
-                      }
-                      return null;
-                    }),
+                child: CommonUtilites.commonEmailInputTextFormField(
+                    _emailcontroller,
+                    Icons.email,
+                    StringManager.email,
+                    StringManager.email,
+                    ((p0) => Validation.getEmailCondition(p0))),
               ),
-
               const SizedBox(height: 16),
-
               Padding(
-                padding: const EdgeInsets.only(left: 30, right: 30),
-                child: TextFormField(
-                    controller: _pass,
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                    cursorColor: ColorManager.secondary,
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return StringManager.required;
+                  padding: const EdgeInsets.only(left: 30, right: 30),
+                  child: CommonUtilites.commonPassInputTextFormField(
+                      _pass,
+                      Icons.lock,
+                      StringManager.password,
+                      StringManager.password,
+                      isShowPass, () {
+                    setState(() {
+                      if (isShowPass) {
+                        isShowPass = false;
+                      } else {
+                        isShowPass = true;
                       }
-                      if (value.length <= 6) {
-                        return StringManager.passwordCondition;
-                      }
-                    },
-                    obscureText: !isShowPass,
-                    decoration: CommonUtilites.getPassInputDec(
-                        StringManager.password,
-                        isLocked: isShowPass,
-                        Icons.lock,
-                        StringManager.password, () {
-                      setState(() {
-                        if (isShowPass) {
-                          isShowPass = false;
-                        } else {
-                          isShowPass = true;
-                        }
-                      });
-                    })),
-              ),
+                    });
+                  }, (p0) => Validation.getPassCondition(p0))),
               const SizedBox(height: 2),
               Padding(
                 padding: const EdgeInsets.only(right: 30),
@@ -134,11 +101,7 @@ class _LoginPageState extends State<LoginPage> {
                   children: [
                     TextButton(
                         onPressed: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) =>
-                                      const ResetPassScreen()));
+                          Navigator.pushNamed(context, ResetPassScreen.id);
                         },
                         child: Text(
                           StringManager.forgotPassword,
@@ -147,49 +110,29 @@ class _LoginPageState extends State<LoginPage> {
                   ],
                 ),
               ),
-
               const SizedBox(height: 12),
-
-              InkWell(
-                onTap: () async {
+              CommonButtonTheme.getCircularButton(
+                ColorManager.primary,
+                context,
+                StringManager.loginText,
+                () async {
                   if (_formKey.currentState!.validate()) {
-                    setState(() {
-                      isLoading = true;
-                    });
+                    showDialog(
+                        context: context,
+                        builder: (context) =>
+                            CommonUtilites.loadingIndicator());
 
-                    await _authService.loginUser(
-                        email: _emailcontroller.text,
-                        password: _pass.text,
+                    final user = await _authService.loginUser(
+                        email: _emailcontroller.text.trim(),
+                        password: _pass.text.trim(),
                         context: context);
-
-                    setState(() {
-                      isLoading = false;
-                    });
+                    if (user != null) {
+                      Navigator.pushReplacementNamed(context, Dashboard.id);
+                    } else {
+                      Navigator.pop(context);
+                    }
                   }
                 },
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 30, right: 30),
-                  child: Container(
-                    height: 42,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        color: ColorManager.primary),
-                    child: Center(
-                        child: isLoading
-                            ? Container(
-                                height: 28,
-                                child: const SpinKitCircle(
-                                  color: Colors.white,
-                                  size: 36,
-                                ))
-                            : const Text(
-                                StringManager.loginText,
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold),
-                              )),
-                  ),
-                ),
               ),
               const SizedBox(height: 8),
               const Text(
@@ -197,27 +140,22 @@ class _LoginPageState extends State<LoginPage> {
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 8),
-              
               InkWell(
                 onTap: () async {
-                  final userCredential = await AuthService()
-                      .signInWithGoogle() as UserCredential;
+                  final userCredential =
+                      await AuthService().signInWithGoogle() as UserCredential;
 
                   if (UserCredential != null) {
-                   
-                    Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const Dashboard()));
+                    Navigator.pushReplacementNamed(context, Dashboard.id);
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                         content: Text(StringManager.wrongPassword)));
                   }
                 },
                 child: Padding(
-                  padding: const EdgeInsets.only(left: 30, right: 30),
+                  padding: const EdgeInsets.only(left: 40, right: 40),
                   child: Container(
-                    height: 42,
+                    height: 40,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(30),
                       color: ColorManager.secondary,
@@ -226,10 +164,10 @@ class _LoginPageState extends State<LoginPage> {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const CircleAvatar(
+                          CircleAvatar(
                             radius: 15,
-                            backgroundColor: Colors.white,
-                            backgroundImage: AssetImage(
+                            backgroundColor: ColorManager.white,
+                            backgroundImage: const AssetImage(
                               IconAssets.ic_google,
                             ),
                           ),
@@ -237,14 +175,14 @@ class _LoginPageState extends State<LoginPage> {
                           Center(
                             child: isLoading1
                                 ? Container(
-                                    child: const SpinKitCircle(
-                                    color: Colors.white,
+                                    child: SpinKitCircle(
+                                    color: ColorManager.white,
                                     size: 28,
                                   ))
-                                : (const Text(
+                                : (Text(
                                     StringManager.googleSignin,
                                     style: TextStyle(
-                                        color: Colors.white,
+                                        color: ColorManager.white,
                                         fontWeight: FontWeight.bold),
                                   )),
                           ),
@@ -254,23 +192,18 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
               ),
-             
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Text(StringManager.noAccount,
+                  Text(StringManager.noAccount,
                       style: TextStyle(
-                          color: Colors.black45,
+                          color: ColorManager.lightGrey,
                           fontWeight: FontWeight.w400,
                           fontSize: 14)),
                   TextButton(
                       onPressed: () {
-                        
-                        Navigator.pushAndRemoveUntil(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const SignupPage()),
-                            (route) => false);
+                        Navigator.pushNamedAndRemoveUntil(
+                            context, SignupPage.id, (route) => false);
                       },
                       child: Text(
                         StringManager.signup,

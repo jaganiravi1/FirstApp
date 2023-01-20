@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+
 
 const String IMAGE_PATH = "assets/images";
 const String ICON_PATH = "assets/icons";
@@ -13,6 +13,9 @@ class IconAssets {
   static const String ic_Cart = "$ICON_PATH/icCart.png";
   static const String ic_hand = "$ICON_PATH/wave_hand.webp";
   static const String ic_google = "$ICON_PATH/icGoogle.png";
+  static const String ic_scanner = "$ICON_PATH/icScanner.png";
+
+
   
 }
 

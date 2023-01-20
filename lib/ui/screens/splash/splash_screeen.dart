@@ -5,11 +5,11 @@ import 'package:application/resources/color_manager.dart';
 import 'package:application/resources/string_manager.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-
 import '../dashboard/dashboard.dart';
 import '../login_page/login_page.dart';
 
 class SplashScreen extends StatefulWidget {
+  static const String id = 'splashScreen';
   const SplashScreen({Key? key}) : super(key: key);
 
   @override

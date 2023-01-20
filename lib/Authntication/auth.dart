@@ -4,9 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-
 import '../model/customer.dart';
-import '../ui/screens/dashboard/dashboard.dart';
 
 class AuthService {
   //Google SignIn
@@ -32,7 +30,7 @@ class AuthService {
   }
 
 //create a new account
-  createNewAccount(
+  Future<User?> createNewAccount(
       {required String email,
       required String userName,
       required String password,
@@ -56,8 +54,7 @@ class AuthService {
 
       if (usercredential.user != null) {
         // ignore: use_build_context_synchronously
-        Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (context) => const Dashboard()));
+        return usercredential.user;
       }
     } on FirebaseAuthException catch (e) {
       if (e.code == 'email-already-in-use') {
@@ -67,16 +64,18 @@ class AuthService {
             const SnackBar(content: Text(StringManager.userExists)));
       }
     }
+    return null;
   }
 
   //for login
-  loginUser(
+ Future<User?> loginUser(
       {required String email,
       required String password,
       required BuildContext context}) async {
     try {
       UserCredential userCredential = await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
+
       await UserPreferences.saveLoginUserInfo(ModelCustomer(
           email: email,
           id: userCredential.user!.uid,
@@ -84,9 +83,9 @@ class AuthService {
           print("Login Email  :  ${await UserPreferences.getUserEmail()}");
 
       if (userCredential.user != null) {
+    return userCredential.user;
         // ignore: use_build_context_synchronously
-        Navigator.pushReplacement(context,
-            MaterialPageRoute(builder: (context) => const Dashboard()));
+     
       }
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
@@ -99,34 +98,6 @@ class AuthService {
     } catch (e) {
       print(e);
     }
+    return null;
   }
 }
-
-// class Auth {
-//   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-
-//   User? get currentUser => _firebaseAuth.currentUser;
-
-//   Stream<User?> get authStateChanges => _firebaseAuth.authStateChanges();
-
-//   Future<void> signInWithEmailAndPassword({
-//     required String email,
-//     required String password,
-//   }) async {
-//     await _firebaseAuth.signInWithEmailAndPassword(
-//         email: email, password: password);
-//   }
-
-//   Future<void> createUserWithEmailAndPassword({
-//     required String email,
-//     required String password,
-//   }) async {
-//     await _firebaseAuth.createUserWithEmailAndPassword(
-//         email: email, password: password);
-//   }
-// //signout
-//   Future<void> signOut() async {
-//     await _firebaseAuth.signOut();
-//   }
-// // }
-// }

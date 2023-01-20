@@ -1,16 +1,16 @@
-//import 'dart:html';
-
 import 'package:application/Authntication/auth.dart';
 import 'package:application/resources/assets_manager.dart';
 import 'package:application/resources/color_manager.dart';
 import 'package:application/resources/string_manager.dart';
 import 'package:application/ui/screens/dashboard/dashboard.dart';
 import 'package:application/ui/screens/login_page/login_page.dart';
+import 'package:application/ui/utilites/button_theme.dart';
+import 'package:application/ui/validator/validation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
-import '../../utilites/border_dec.dart';
+import '../../utilites/common_utilities.dart';
 
 class SignupPage extends StatefulWidget {
+  static String id = 'signup';
   const SignupPage({super.key});
 
   @override
@@ -63,188 +63,107 @@ class _SignupPageState extends State<SignupPage> {
               ),
               Padding(
                 padding: const EdgeInsets.only(left: 30, right: 30),
-                child: TextFormField(
-                    cursorColor: ColorManager.secondary,
-                    controller: _usernamecontroller,
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                    decoration: InputDecoration(
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(
-                          color: ColorManager.secondary,
-                        ),
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-
-                      prefixIcon:
-                          Icon(Icons.person, color: ColorManager.secondary),
-                      hintText: StringManager.Username,
-                      //errorText: 'Invalid Email',
-                      focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(30),
-                          borderSide: BorderSide(
-                              width: 2, color: ColorManager.secondary)),
-                      errorBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(30),
-                          borderSide: BorderSide(color: ColorManager.darkred)),
-
-                      labelText: StringManager.Username,
-                      labelStyle: TextStyle(color: ColorManager.secondary),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                    ),
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return StringManager.required;
-                      }
-
-                      return null;
-                    }),
+                child: CommonUtilites.commonEmailInputTextFormField(
+                    _usernamecontroller,
+                    Icons.person,
+                    StringManager.Username,
+                    StringManager.Username, (value) {
+                  if (value!.isEmpty) {
+                    return StringManager.required;
+                  }
+                  return null;
+                }),
               ),
-              const SizedBox(
-                height: 16,
-              ),
+              sizedBoxH16(),
               Padding(
                 padding: const EdgeInsets.only(left: 30, right: 30),
-                child: TextFormField(
-                    cursorColor: ColorManager.secondary,
-                    controller: _emailcontroller,
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                    decoration: CommonUtilites.getInputDec(
-                        StringManager.email,
-                        Icons.email,
-                        StringManager.email),
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return StringManager.required;
-                      }
-                      if (!RegExp(
-                              r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-                          .hasMatch(value)) {
-                        return StringManager.validEmail;
-                      }
-                      return null;
-                    }),
+                child: CommonUtilites.commonEmailInputTextFormField(
+                    _emailcontroller,
+                    Icons.email,
+                    StringManager.email,
+                    StringManager.email,
+                    ((p0) => Validation.getEmailCondition(p0))),
               ),
-              const SizedBox(height: 16),
+              sizedBoxH16(),
               Padding(
-                padding: const EdgeInsets.only(left: 30, right: 30),
-                child: TextFormField(
-                    cursorColor: ColorManager.secondary,
-                    controller: _pass,
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return StringManager.required;
-                      }
-                      if (value.length <= 6) {
-                        return StringManager.passwordCondition;
-                      }
-                    },
-                    obscureText: !isShowPass,
-                    decoration: CommonUtilites.getPassInputDec(
-                        StringManager.password,
-                        isLocked: isShowPass,
-                        Icons.lock,
-                        StringManager.password, () {
-                      setState(() {
-                        if (isShowPass) {
-                          isShowPass = false;
-                        } else {
-                          isShowPass = true;
-                        }
-                      });
-                    })),
-              ),
-              const SizedBox(height: 16),
-              Padding(
-                padding: const EdgeInsets.only(left: 30, right: 30),
-                child: TextFormField(
-                    controller: _confirmpass,
-                    cursorColor: ColorManager.secondary,
-                    autovalidateMode: AutovalidateMode.onUserInteraction,
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return StringManager.required;
-                      }
-                      if (value != _pass.text) {
-                        return StringManager.passwordNotMatch;
-                      }
-                      return null;
-                    },
-                    obscureText: !isShowPass1,
-                    decoration: CommonUtilites.getPassInputDec(
-                        StringManager.confirmPass,
-                        isLocked: isShowPass1,
-                        Icons.lock,
-                        StringManager.confirmPass, () {
-                      setState(() {
-                        if (isShowPass1) {
-                          isShowPass1 = false;
-                        } else {
-                          isShowPass1 = true;
-                        }
-                      });
-                    })),
-              ),
-              const SizedBox(height: 16),
-              InkWell(
-                onTap: () async {
-                  if (_formKey.currentState!.validate()) {
+                  padding: const EdgeInsets.only(left: 30, right: 30),
+                  child: CommonUtilites.commonPassInputTextFormField(
+                      _pass,
+                      Icons.lock,
+                      StringManager.password,
+                      StringManager.password,
+                      isShowPass, () {
                     setState(() {
-                      isLoading = true;
+                      if (isShowPass) {
+                        isShowPass = false;
+                      } else {
+                        isShowPass = true;
+                      }
                     });
-                    _authService.createNewAccount(email: _emailcontroller.text, userName: _usernamecontroller.text, password: _pass.text,context: context);
+                  }, (p0) => Validation.getPassCondition(p0))),
+              sizedBoxH16(),
+              Padding(
+                  padding: const EdgeInsets.only(left: 30, right: 30),
+                  child: CommonUtilites.commonPassInputTextFormField(
+                      _confirmpass,
+                      Icons.lock,
+                      StringManager.confirmPass,
+                      StringManager.password,
+                      isShowPass1, () {
+                    setState(() {
+                      if (isShowPass1) {
+                        isShowPass1 = false;
+                      } else {
+                        isShowPass1 = true;
+                      }
+                    });
+                  },
+                      (p0) =>
+                          Validation.getConfirmPassCondition(p0, _pass.text))),
+              sizedBoxH16(),
+              CommonButtonTheme.getCircularButton(
+                ColorManager.primary,
+                context,
+                StringManager.signup,
+                () async {
+                  if (_formKey.currentState!.validate()) {
+                    showDialog(
+                        context: context,
+                        builder: (context) =>
+                            CommonUtilites.loadingIndicator());
+                    final user = await _authService.createNewAccount(
+                        email: _emailcontroller.text,
+                        userName: _usernamecontroller.text,
+                        password: _pass.text,
+                        context: context);
+                    if (user != null) {
+                      Navigator.pushReplacementNamed(context, Dashboard.id);
+                    } else {
+                      Navigator.pop(context);
+                    }
                   }
                 },
-                child: Padding(
-                  padding: const EdgeInsets.only(left: 30, right: 30),
-                  child: Container(
-                    height: 40,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      color: ColorManager.primary,
-                    ),
-                    child: Center(
-                        child: Container(
-                      child: isLoading
-                          ? Container(
-                              height: 28,
-                              child: SpinKitCircle(
-                                color: ColorManager.white,
-                                size: 36,
-                              ))
-                          : Text(
-                              StringManager.signup,
-                              style: TextStyle(
-                                  color: ColorManager.white,
-                                  fontWeight: FontWeight.bold),
-                            ),
-                    )),
-                  ),
-                ),
               ),
-              const SizedBox(height: 8),
+              sizedBoxH16(),
               const Text(
                 StringManager.or,
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
-              const SizedBox(height: 8),
+              sizedBoxH16(),
               InkWell(
                 onTap: () async {
                   final UserCredential = AuthService().signInWithGoogle();
                   if (UserCredential != null) {
-                    Navigator.pushReplacement(context,
-                        MaterialPageRoute(builder: (context) => Dashboard()));
+                    Navigator.pushReplacementNamed(context, Dashboard.id);
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(content: Text(StringManager.wrong)));
                   }
                 },
                 child: Padding(
-                  padding: const EdgeInsets.only(left: 30, right: 30),
+                  padding: const EdgeInsets.only(left: 40, right: 40),
                   child: Container(
-                    height: 42,
+                    height: 40,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(30),
                       color: ColorManager.secondary,
@@ -254,7 +173,7 @@ class _SignupPageState extends State<SignupPage> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         // ignore: prefer_const_literals_to_create_immutables
                         children: [
-                           CircleAvatar(
+                          CircleAvatar(
                             radius: 15,
                             backgroundColor: ColorManager.white,
                             backgroundImage: const AssetImage(
@@ -262,7 +181,7 @@ class _SignupPageState extends State<SignupPage> {
                             ),
                           ),
                           const SizedBox(width: 8),
-                           Text(
+                          Text(
                             StringManager.googleSignin,
                             style: TextStyle(
                                 color: ColorManager.white,
@@ -284,11 +203,7 @@ class _SignupPageState extends State<SignupPage> {
                           fontSize: 14)),
                   TextButton(
                     onPressed: () {
-                      Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => LoginPage()),
-                          (route) => false);
+                      Navigator.pushNamedAndRemoveUntil(context, LoginPage.id, (route) => false);
                     },
                     child: Text(
                       StringManager.loginText,
@@ -304,5 +219,9 @@ class _SignupPageState extends State<SignupPage> {
         ),
       ),
     );
+  }
+
+  Widget sizedBoxH16() {
+    return const SizedBox(height: 16);
   }
 }
