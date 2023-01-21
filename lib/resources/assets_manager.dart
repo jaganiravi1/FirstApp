@@ -14,6 +14,12 @@ class IconAssets {
   static const String ic_hand = "$ICON_PATH/wave_hand.webp";
   static const String ic_google = "$ICON_PATH/icGoogle.png";
   static const String ic_scanner = "$ICON_PATH/icScanner.png";
+  static const String ic_eng = "$ICON_PATH/english.png";
+  static const String ic_arb = "$ICON_PATH/arabic.png";
+  static const String backArrowBlack = "$ICON_PATH/ic_backarrow_black.svg";
+  static const String backMirrorArrowBlack =
+      "$ICON_PATH/ic_mirror_backarrow_black.svg";
+  
 
 
   

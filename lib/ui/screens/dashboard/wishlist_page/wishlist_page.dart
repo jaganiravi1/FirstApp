@@ -99,6 +99,7 @@ class _MyListsState extends State<MyLists> {
                                   const EdgeInsets.only(left: 20.0, right: 20),
                               child: InkWell(
                                 onTap: () {
+                                  //Navigator.pushNamed(context, ProductList.id,arguments: ProductList(wId: documentSnapshot.id, tittle: "${snapshot.data?.docs[index]['name']}"));
                                   Navigator.push(
                                       context,
                                       MaterialPageRoute(

@@ -1,5 +1,10 @@
 
 class StringManager {
+  static const String appName = 'Flutter Master App';
+  static const String noRouteFound = 'No route Found';
+  static const String requestTimeOut = 'Request Time out. Please try later';
+  static const String internalServerError = 'Internal Server error. Please try later';
+  static const String internetConnectionError = 'Please check your internet connection.';
   //splash screen
   static const String splashscreenText = 'Shoppy';
   // Button
@@ -46,6 +51,7 @@ class StringManager {
   static const String lists = 'Lists';
   static const String categories = 'Categories';
   static const String more = 'More';
+   static const String changeLang = 'Change Language';
 
   // Reset Password
   static const String resetPass = 'Reset Password';

@@ -1,0 +1,9 @@
+{
+  "appName": "Buzo",
+  "login": "Login",
+  "welcome": "Welcome",
+  "saveLanguage": "Save Language",
+  "selectLanguage": "Select Language",
+  "paymentMethod" : "Payment Method"
+  
+}

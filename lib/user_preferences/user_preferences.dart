@@ -1,13 +1,16 @@
 // ignore: depend_on_referenced_packages
-import 'package:application/model/customer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:async';
+
+import '../model/responses/customer.dart';
+import 'global_variables.dart';
 
 const String id = "id";
 const String name = "name";
 const String email = "email";
 const String userTokenPref = "userToken";
 const String isLoggedInPref = "isLoggedIn";
+const String selectedLocaleLanguageCodePref = "selectedLocaleLanguageCode";
 
 class UserPreferences {
   static Future<String> getUserToken() async {
@@ -72,5 +75,17 @@ class UserPreferences {
     await prefs.setString(name, "");
     await prefs.setString(email, "");
     await prefs.setString(userTokenPref, "");
+  }
+
+  static Future<String> getLocaleLanguageCode() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getString(selectedLocaleLanguageCodePref) ??
+        LanguageCode.languageCodeEnglish;
+  }
+  static Future<void> setLocaleLanguageCode(
+      {required String languageCode}) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString(selectedLocaleLanguageCodePref, languageCode);
+    GlobalVariables.languageCode = languageCode;
   }
 }
